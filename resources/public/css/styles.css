@@ -1,0 +1,111 @@
+html, body {
+  /* Make the body to be as tall as browser window */
+  height: 100%;
+  margin: 0;
+  font-family: Sans-serif;
+  color: white;
+}
+
+.login {
+ position: absolute;
+ top: calc(50% - 72px);
+ left: calc(50% - 142px);
+}
+
+.body {
+ height: 100%;
+ background-image: linear-gradient(red, blue);
+}
+
+.login {
+ top: calc(50% - 72px);
+ left: calc(50% - 142px);
+ position: absolute;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="date"] {
+ border-radius: 6px;
+ border-color: blue;
+ border-width: 2px;
+ border-style: solid;
+ color: blue;
+ width: 130px;
+}
+
+input[type="button"] {
+ background-color: white;
+ border-color: blue;
+ border-style: solid;
+ border-radius: 4px;
+ color: red;
+ padding: 4px 10px;
+ cursor: pointer;
+}
+
+a:hover {
+ cursor: pointer;
+}
+
+.error {
+ border-color: red !important;
+}
+
+.header {
+ height: 30px;
+ width: 100%;
+ top: 0;
+ position: absolute;
+}
+
+.header a:hover {
+ color: blue;
+}
+
+.header nav {
+ float: right;
+ margin-top: 5px;
+}
+
+.header nav a {
+ margin-right: 5px;
+}
+
+.footer {
+ height: 30px;
+ width: 100%;
+ bottom: 0;
+ position: absolute;
+}
+
+.footer a:hover {
+ color: red;
+}
+
+.sidebar-menu {
+ height: calc(100% - 60px);
+ width: 100px;
+ top: 30px;
+ position:absolute;
+}
+
+.sidebar-menu div {
+ padding: 5px 10px;
+ border-bottom: 2px solid white;
+}
+
+.content {
+ background-color: white;
+ color: blue;
+ height: calc(100% - 80px);
+ width: calc(100% - 120px);
+ top: 30px;
+ left: 100px;
+ position:absolute;
+ overflow: auto;
+ border-radius: 0 10px;
+ padding: 10px;
+}
+
