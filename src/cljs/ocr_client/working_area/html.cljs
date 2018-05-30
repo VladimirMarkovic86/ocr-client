@@ -1,11 +1,12 @@
 (ns ocr-client.working-area.html
  (:require [htmlcss-lib.core :refer [gen div a select option
-                                     img input label]]))
+                                     img input label textarea]]))
 
 (defn gallery-fn
  ""
  [images
-  evt-fn]
+  evt-fn
+  save-sign-fn]
  (gen
   (let [image-el (fn [id
                       src
@@ -32,30 +33,72 @@
      (swap! itr inc))
     )
    [(div
-     (input
-       ""
-       {:type "button"
-        :value "<-"}
-       {:onclick {:evt-fn evt-fn
-                  :evt-p -}})
-     {:style {:float "left"
-              :padding "10px"}})
+      (input
+        ""
+        {:type "button"
+         :value "<-"}
+        {:onclick {:evt-fn evt-fn
+                   :evt-p -}})
+      {:style {:float "left"
+               :height "70px"
+               :display "grid"
+               :justify-content "center"
+               :align-content "center"}})
     (div
-     @image-elements
-     {:style {:float "left"
-              :width "150px"
-              :height "70px"
-              :padding "10px"}})
+      [(div
+         @image-elements
+         {:style {:width "200px"
+                  :height "70px"
+                  :display "grid"
+                  :justify-content "center"
+                  :align-content "center"}})
+       (div
+         (input
+           ""
+           {:id "signValue"
+            :type "text"
+            :style {:text-align "center"}})
+         {:style {:width "200px"
+                  :display "grid"
+                  :justify-content "center"
+                  :align-content "center"}})
+       (div
+         (input
+           ""
+           {:type "button"
+            :value "Save sign"
+            :style {:margin-left "unset"}}
+           {:onclick {:evt-fn save-sign-fn}})
+         {:style {:width "200px"
+                  :display "grid"
+                  :justify-content "center"}})]
+      {:style {:float "left"
+               :height "140px"
+               :padding-left "5px"}})
     (div
-     (input
-       ""
-       {:type "button"
-        :value "->"}
-       {:onclick {:evt-fn evt-fn
-                  :evt-p +}})
-     {:style {:float "left"
-              :padding "10px"}})]
-   ))
+      (input
+        ""
+        {:type "button"
+         :value "->"}
+        {:onclick {:evt-fn evt-fn
+                   :evt-p +}})
+      {:style {:float "left"
+               :height "70px"
+               :display "grid"
+               :justify-content "center"
+               :align-content "center"}})]))
+ )
+
+(defn textarea-fn
+ ""
+ [text]
+ (gen
+   (textarea
+     text
+     {:readonly "true"
+      :style {:width "400px"
+              :height "250px"
+              :resize "none"}}))
  )
 
 (defn btn-fn
@@ -77,9 +120,15 @@
  [id
   & [attrs
      evts
-     input-evts]]
+     input-evts
+     label-text]]
  (gen
-  [(input
+  [(div
+     (label label-text)
+     {:style {:float "left"
+              :width "100px"}})
+   
+   (input
     ""
     (conj
      {:id id
@@ -91,8 +140,11 @@
     evts)
    (input
      ""
-     {:id (str id "-value")
-      :value "0"}
+     (conj
+       {:id (str id "-value")
+        :value "0"
+        :style {:width "50px"}}
+       attrs)
      input-evts)]))
 
 (defn image-fn
@@ -115,8 +167,7 @@
 (defn working-area-html-fn
  ""
  [{select-data :select-data
-   prepare-image-fn :prepare-image-fn
-   save-sign-fn :save-sign-fn}]
+   prepare-image-fn :prepare-image-fn}]
  (gen
   (div 
    [(div
@@ -138,39 +189,35 @@
        {:onchange {:evt-fn prepare-image-fn}})
      {:id "source"})
     (div
-     [(div ""
-           {:id "processImage"})
-      (div ""
-           {:id "light"})
-      (div ""
-           {:id "contrast"})
-      (div ""
-           {:id "process"})]
+     [(div
+        ""
+        {:id "processImage"})
+      (div
+        ""
+        {:id "light"})
+      (div
+        ""
+        {:id "contrast"})
+      (div
+        ""
+        {:id "space"})
+      (div
+        ""
+        {:id "hooks"})
+      (div
+        ""
+        {:id "matching"})
+      (div
+        ""
+        {:id "process"})]
      {:id "image"})
     (div
      [(div
         ""
         {:id "gallery"
-         :style {:height "80px"
-                 :width "300px"
-                 :padding "10px"}})
+         :style {:height "140px"}})
       (div
-        [(input
-           ""
-           {:id "signValue"
-            :type "text"})
-         (input
-           ""
-           {:type "button"
-            :value "Save sign"}
-           {:onclick {:evt-fn save-sign-fn}}
-           )]
-        {:id "sign"})
-      (div
-        (input
-          ""
-          {:type "button"
-           :value "Display text"})
+        ""
         {:id "resultText"})]
      {:id "results"})]
    {:class "workingArea"})
