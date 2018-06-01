@@ -1,6 +1,6 @@
 (ns ocr-client.working-area.html
- (:require [htmlcss-lib.core :refer [gen div a select option
-                                     img input label textarea]]))
+ (:require [htmlcss-lib.core :refer [gen div a input label
+                                     textarea img]]))
 
 (defn gallery-fn
  ""
@@ -149,12 +149,15 @@
 
 (defn image-fn
  ""
- [src]
+ [src
+  & [style-attrs]]
  (gen
   [(img
      ""
      {:id "preparedImage"
-      :style {:width "100%"}
+      :style (conj
+               {:width "100%"}
+               style-attrs)
       :src src})
    (input
      ""
@@ -164,74 +167,19 @@
   )
  )
 
-(defn working-area-html-fn
- ""
- [{select-data :select-data
-   prepare-image-fn :prepare-image-fn}]
- (gen
-  (div 
-   [(div
-     (select
-      (let [options (atom [(option "- Select -"
-                                   {:value "-1"})])]
-       (doseq [{_id :_id
-                dname :dname
-                dtype :dtype} select-data]
-        (swap!
-          options
-          conj
-          (option dname
-                  {:dtype dtype
-                   :value _id}))
-        )
-       @options)
-       {:id "selectSource"}
-       {:onchange {:evt-fn prepare-image-fn}})
-     {:id "source"})
-    (div
-     [(div
-        ""
-        {:id "processImage"})
-      (div
-        ""
-        {:id "light"})
-      (div
-        ""
-        {:id "contrast"})
-      (div
-        ""
-        {:id "space"})
-      (div
-        ""
-        {:id "hooks"})
-      (div
-        ""
-        {:id "matching"})
-      (div
-        ""
-        {:id "process"})]
-     {:id "image"})
-    (div
-     [(div
-        ""
-        {:id "gallery"
-         :style {:height "140px"}})
-      (div
-        ""
-        {:id "resultText"})]
-     {:id "results"})]
-   {:class "workingArea"})
-  )
- )
-
 (defn nav
  "Generate ul HTML element
   that represents navigation menu"
- [evts]
+ [learning-evts
+  reading-evts]
  (gen
   [(div
-    (a "Working area"
+    (a "Learning"
        nil
-       evts))])
+       learning-evts))
+   (div
+    (a "Reading"
+       nil
+       reading-evts))])
  )
                    

@@ -1,8 +1,9 @@
 (ns ocr-client.core
  (:require [ajax-lib.core :refer [ajax]]
+           [js-lib.core :as md]
            [ocr-client.login.controller :refer [redirect-to-login
-                                                   main-page
-                                                   logout]]))
+                                                main-page
+                                                logout]]))
 
 (def am-i-logged-in-url "/clojure/am-i-logged-in")
 

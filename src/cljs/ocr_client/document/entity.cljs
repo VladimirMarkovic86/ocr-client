@@ -72,3 +72,12 @@
       :table-class "entities"
       :table-fn gen-table})
 
+(def query-documents-select-tag
+     {:entity-type  entity-type
+      :entity-filter  {}
+      :projection  [:dname :dtype]
+      :projection-include  true
+      :qsort  {:dname 1}
+      :pagination  false
+      :collation {:locale "sr"}})
+

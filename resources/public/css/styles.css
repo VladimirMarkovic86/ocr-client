@@ -134,5 +134,35 @@ a:hover {
  left: 0;
  animation: please-wait-animation 1s;
  animation-iteration-count: infinite;
+ display: grid;
+ justify-content: center;
+ align-content: center;
+}
+
+.progress-bar-background {
+ position: absolute;
+ width: 100%;
+ height: 100%;
+ z-index: 2;
+ top: 0;
+ left: 0;
+ display: grid;
+ justify-content: center;
+ align-content: center;
+}
+
+.progress-bar {
+ width: 100px;
+ height: 20px;
+ background-color: white;
+ border-radius: 5px;
+ border: 2px solid blue;
+ display: grid;
+ justify-content: center;
+ align-content: center;
+}
+
+.progress-bar-done-number {
+ color: blue;
 }
 

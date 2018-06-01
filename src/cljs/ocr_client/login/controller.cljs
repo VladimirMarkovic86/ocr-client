@@ -1,9 +1,8 @@
 (ns ocr-client.login.controller
  (:require [ajax-lib.core :refer [ajax get-response]]
            [js-lib.core :as md]
-           [ocr-client.login.html :as lhtml]))
-
-(def login-url "/clojure/login")
+           [ocr-client.login.html :as lhtml]
+           [ocr-client.request-urls :as rurls]))
 
 (defn remove-main
  "Remove main page from HTML document"
@@ -66,7 +65,7 @@
   (md/append-element ".body"
                      (lhtml/form
                       {:onclick {:evt-fn ajax
-                                 :evt-p {:url login-url
+                                 :evt-p {:url rurls/login-url
                                          :success-fn login-success
                                          :error-fn login-error
                                          :entity read-login-form
@@ -77,7 +76,7 @@
   (md/append-element ".body"
                      (lhtml/form
                       {:onclick {:evt-fn ajax
-                                 :evt-p {:url login-url
+                                 :evt-p {:url rurls/login-url
                                          :success-fn login-success
                                          :error-fn login-error
                                          :entity read-login-form
