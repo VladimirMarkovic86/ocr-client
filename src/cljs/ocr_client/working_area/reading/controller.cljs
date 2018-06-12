@@ -50,20 +50,40 @@
                     learned-image-src]}})
   ))
 
+(defn check-read-image-progress-fn-success
+ ""
+ [xhr
+  params-map]
+ (let [response (get-response xhr)
+       job-s-done (:job-s-done response)
+       check-again-fn (:check-progress-fn params-map)]
+   (if job-s-done
+     (let [images-of-signs (:images response)
+           read-text (:read-text response)
+           textarea (wah/textarea-fn read-text)]
+      (md/remove-element-content
+        "#resultText")
+      (md/append-element
+        "#resultText"
+        textarea)
+      (md/end-please-wait))
+     (check-again-fn))
+  ))
+
+(defn check-read-image-progress-fn
+ ""
+ []
+ (ajax
+   {:url rurls/check-read-image-progress-url
+    :success-fn check-read-image-progress-fn-success
+    :entity {}
+    :check-progress-fn check-read-image-progress-fn
+    :dont-print-xhr true}))
+
 (defn read-image-fn-success
  "Image read successfully"
  [xhr]
- (let [response (get-response xhr)
-       images-of-signs (:images response)
-       read-text (:read-text response)
-       textarea (wah/textarea-fn read-text)]
-  (md/remove-element-content
-    "#resultText")
-  (md/append-element
-    "#resultText"
-    textarea)
-  (md/end-please-wait))
- )
+ (check-read-image-progress-fn))
 
 (defn read-image-fn
  "Call server to read image"
@@ -84,6 +104,12 @@
        matching-slider (md/query-selector
                          "#matchingSlider")
        matching-slider-value (md/get-value matching-slider)
+       threads-slider (md/query-selector
+                         "#threadsSlider")
+       threads-slider-value (md/get-value threads-slider)
+       rows-threads-slider (md/query-selector
+                         "#rowsThreadsSlider")
+       rows-threads-slider-value (md/get-value rows-threads-slider)
        image-src (md/get-src "#imgimageSource")
        {_id :value} (md/get-selected-options "#selectLearnedSource")]
   (ajax
@@ -96,6 +122,8 @@
       :space-value space-slider-value
       :hooks-value hooks-slider-value
       :matching-value matching-slider-value
+      :threads-value threads-slider-value
+      :rows-threads-value rows-threads-slider-value
       :image-src image-src}}))
  )
 
@@ -110,6 +138,8 @@
        space-value (:space data)
        hooks-value (:hooks data)
        matching-value (:matching data)
+       threads-value (:threads data)
+       rows-threads-value (:rows-threads data)
        image (wah/image-fn
                src
                {:width "unset"
@@ -178,6 +208,30 @@
                          (slider-input-evts
                            matching-slider-selector)
                          "Matching")
+       threads-slider-selector "threadsSlider"
+       threads-slider (wah/slider-fn
+                        threads-slider-selector
+                        {:min "1"
+                         :max "16"
+                         :value (or threads-value
+                                    "4")}
+                        (slider-evts
+                          threads-slider-selector)
+                        (slider-input-evts
+                          threads-slider-selector)
+                        "Threads")
+       rows-threads-slider-selector "rowsThreadsSlider"
+       rows-threads-slider (wah/slider-fn
+                             rows-threads-slider-selector
+                             {:min "1"
+                              :max "16"
+                              :value (or rows-threads-value
+                                         "4")}
+                             (slider-evts
+                               rows-threads-slider-selector)
+                             (slider-input-evts
+                               rows-threads-slider-selector)
+                             "Rows threads")
        process-btn (wah/btn-fn
                      {:evt-fn process-images-fn
                       :value "Process"})
@@ -214,6 +268,16 @@
   (md/append-element
     "#matching"
     matching-slider)
+  (md/remove-element-content
+    "#threads")
+  (md/append-element
+    "#threads"
+    threads-slider)
+  (md/remove-element-content
+    "#rowsThreads")
+  (md/append-element
+    "#rowsThreads"
+    rows-threads-slider)
   (md/remove-element-content
     "#process")
   (md/append-element

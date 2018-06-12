@@ -46,6 +46,12 @@
         {:id "matching"})
       (div
         ""
+        {:id "threads"})
+      (div
+        ""
+        {:id "rowsThreads"})
+      (div
+        ""
         {:id "process"})]
      {:id "image"})
     (div

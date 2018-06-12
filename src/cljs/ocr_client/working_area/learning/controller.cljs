@@ -106,56 +106,76 @@
              :sign-image sign-src}}))
  )
 
+(defn check-read-image-progress-fn-success
+ ""
+ [xhr
+  params-map]
+ (let [response (get-response xhr)
+       job-s-done (:job-s-done response)
+       check-again-fn (:check-progress-fn params-map)]
+   (if job-s-done
+     (let [images-of-signs (:images response)
+           read-text (:read-text response)
+           signs-count (count images-of-signs)
+           evt-fn (fn [direction]
+                   (let [displayed-image (md/query-selector
+                                          "#gallery img[style*='display: inline;']")
+                         sign-id (md/get-attr displayed-image "id")
+                         current-value (md/replace-single
+                                         sign-id
+                                         "sign"
+                                         "")
+                         current-value (reader/read-string current-value)
+                         new-value (direction
+                                     current-value
+                                     1)
+                         hidden-signs (md/query-selector-all
+                                        "#gallery img[style*='display: none;']")
+                         signs-count (inc (count hidden-signs))]
+                    (when (and (< new-value
+                                  signs-count)
+                               (< -1
+                                  new-value))
+                     (let [hidden-image (md/query-selector (str "#sign" new-value))
+                           displayed-image (md/query-selector (str "#sign" current-value))]
+                      (md/set-attr hidden-image "style" "display: inline;")
+                      (md/set-attr displayed-image "style" "display: none;"))
+                     ))
+                   )
+           gallery (wah/gallery-fn
+                     images-of-signs
+                     evt-fn
+                     save-sign-fn)
+           textarea (wah/textarea-fn read-text)]
+      (md/remove-element-content
+        "#gallery")
+      (when-not (empty? images-of-signs)
+       (md/append-element
+         "#gallery"
+         gallery))
+      (md/remove-element-content
+        "#resultText")
+      (md/append-element
+        "#resultText"
+        textarea)
+      (md/end-please-wait))
+     (check-again-fn))
+  ))
+
+(defn check-read-image-progress-fn
+ ""
+ []
+ (ajax
+   {:url rurls/check-read-image-progress-url
+    :success-fn check-read-image-progress-fn-success
+    :entity {}
+    :check-progress-fn check-read-image-progress-fn
+    :dont-print-xhr true}))
+
 (defn read-image-fn-success
  "Image read successfully"
  [xhr]
- (let [response (get-response xhr)
-       images-of-signs (:images response)
-       read-text (:read-text response)
-       signs-count (count images-of-signs)
-       evt-fn (fn [direction]
-               (let [displayed-image (md/query-selector
-                                      "#gallery img[style*='display: inline;']")
-                     sign-id (md/get-attr displayed-image "id")
-                     current-value (md/replace-single
-                                     sign-id
-                                     "sign"
-                                     "")
-                     current-value (reader/read-string current-value)
-                     new-value (direction
-                                 current-value
-                                 1)
-                     hidden-signs (md/query-selector-all
-                                    "#gallery img[style*='display: none;']")
-                     signs-count (inc (count hidden-signs))]
-                (when (and (< new-value
-                              signs-count)
-                           (< -1
-                              new-value))
-                 (let [hidden-image (md/query-selector (str "#sign" new-value))
-                       displayed-image (md/query-selector (str "#sign" current-value))]
-                  (md/set-attr hidden-image "style" "display: inline;")
-                  (md/set-attr displayed-image "style" "display: none;"))
-                 ))
-               )
-       gallery (wah/gallery-fn
-                 images-of-signs
-                 evt-fn
-                 save-sign-fn)
-       textarea (wah/textarea-fn read-text)]
-  (md/remove-element-content
-    "#gallery")
-  (when-not (empty? images-of-signs)
-   (md/append-element
-     "#gallery"
-     gallery))
-  (md/remove-element-content
-    "#resultText")
-  (md/append-element
-    "#resultText"
-    textarea)
-  (md/end-please-wait))
- )
+ (check-read-image-progress-fn))
 
 (defn read-image-fn
  "Call server to read image"
@@ -176,6 +196,12 @@
        matching-slider (md/query-selector
                          "#matchingSlider")
        matching-slider-value (md/get-value matching-slider)
+       threads-slider (md/query-selector
+                         "#threadsSlider")
+       threads-slider-value (md/get-value threads-slider)
+       rows-threads-slider (md/query-selector
+                             "#rowsThreadsSlider")
+       rows-threads-slider-value (md/get-value rows-threads-slider)
        image (md/query-selector "#hiddenPreparedImage")
        image-src (md/get-value image)
        {_id :value} (md/get-selected-options "#selectSource")]
@@ -188,7 +214,9 @@
       :contrast-value contrast-slider-value
       :space-value space-slider-value
       :hooks-value hooks-slider-value
-      :matching-value matching-slider-value
+      :matching-value matching-slider-value      
+      :threads-value threads-slider-value
+      :rows-threads-value rows-threads-slider-value
       :image-src image-src}}))
  )
 
@@ -211,6 +239,12 @@
        matching-slider (md/query-selector
                          "#matchingSlider")
        matching-slider-value (md/get-value matching-slider)
+       threads-slider (md/query-selector
+                         "#threadsSlider")
+       threads-slider-value (md/get-value threads-slider)
+       rows-threads-slider (md/query-selector
+                             "#rowsThreadsSlider")
+       rows-threads-slider-value (md/get-value rows-threads-slider)
        {_id :value} (md/get-selected-options "#selectSource")]
   (ajax
    {:url rurls/save-parameters-url
@@ -221,7 +255,9 @@
       :contrast-value contrast-slider-value
       :space-value space-slider-value
       :hooks-value hooks-slider-value
-      :matching-value matching-slider-value}}))
+      :matching-value matching-slider-value
+      :threads-value threads-slider-value
+      :rows-threads-value rows-threads-slider-value}}))
  )
 
 (defn prepare-image-fn-success
@@ -235,6 +271,8 @@
        space-value (:space data)
        hooks-value (:hooks data)
        matching-value (:matching data)
+       threads-value (:threads data)
+       rows-threads-value (:rows-threads data)
        image (wah/image-fn src)
        slider-evts (fn [id]
                     {:onchange
@@ -300,6 +338,30 @@
                          (slider-input-evts
                            matching-slider-selector)
                          "Matching")
+       threads-slider-selector "threadsSlider"
+       threads-slider (wah/slider-fn
+                         threads-slider-selector
+                         {:min "1"
+                          :max "16"
+                          :value (or threads-value
+                                     "4")}
+                         (slider-evts
+                           threads-slider-selector)
+                         (slider-input-evts
+                           threads-slider-selector)
+                         "Threads")
+       rows-threads-slider-selector "rowsThreadsSlider"
+       rows-threads-slider (wah/slider-fn
+                             rows-threads-slider-selector
+                             {:min "1"
+                              :max "16"
+                              :value (or rows-threads-value
+                                         "4")}
+                             (slider-evts
+                               rows-threads-slider-selector)
+                             (slider-input-evts
+                               rows-threads-slider-selector)
+                             "Rows threads")
        process-btn (wah/btn-fn
                      {:evt-fn process-image-fn
                       :value "Process"})
@@ -339,6 +401,16 @@
   (md/append-element
     "#matching"
     matching-slider)
+  (md/remove-element-content
+    "#threads")
+  (md/append-element
+    "#threads"
+    threads-slider)
+  (md/remove-element-content
+    "#rowsThreads")
+  (md/append-element
+    "#rowsThreads"
+    rows-threads-slider)
   (md/remove-element-content
     "#process")
   (md/append-element
