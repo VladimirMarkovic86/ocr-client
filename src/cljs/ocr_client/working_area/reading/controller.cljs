@@ -1,5 +1,6 @@
 (ns ocr-client.working-area.reading.controller
  (:require [ajax-lib.core :refer [ajax get-response]]
+           [websocket-lib.core :refer [websocket]]
            [js-lib.core :as md]
            [ocr-client.utils :as utils]
            [ocr-client.request-urls :as rurls]
@@ -8,134 +9,143 @@
            [ocr-client.working-area.reading.html :as rh]
            [cljs.reader :as reader]))
 
-(def web-socket (atom nil))
+(defn process-image-ws-onopen-fn
+ ""
+ [event]
+ (let [websocket-obj (aget event "target")
+       light-slider (md/query-selector
+                      "#lightSlider")
+       light-slider-value (md/get-value
+                            light-slider)
+       contrast-slider (md/query-selector
+                         "#contrastSlider")
+       contrast-slider-value (md/get-value
+                               contrast-slider)
+       image (md/query-selector
+               "#hiddenimageSource")
+       new-image-src (md/get-value
+                       image)
+       image (md/query-selector
+               "#hiddenPreparedImage")
+       learned-image-src (md/get-value
+                           image)]
+   (.send
+     websocket-obj
+     (str
+       {:light-value light-slider-value
+        :contrast-value contrast-slider-value
+        :image-srcs [new-image-src
+                     learned-image-src]}))
+  ))
 
-(defn process-images-fn-success
- "Successful image processing"
- [xhr]
- (let [response (get-response xhr)
-       [new-image-src
-        learned-image-src] (:srcs response)
-       new-image-el (md/query-selector "#imgimageSource")
-       learned-image-el (md/query-selector "#preparedImage")]
-  (md/set-src
-    new-image-el
-    new-image-src)
-  (md/set-src
-    learned-image-el
-    learned-image-src)
-  (md/end-progress-bar))
+(defn process-image-ws-onmessage-fn
+ ""
+ [event]
+ (let [response (reader/read-string (aget event "data"))
+       action (:action response)]
+   (when (= action
+            "update-progress")
+     (let [progress-value (:progress-value response)]
+       (md/update-progress-bar
+         progress-value))
+    )
+   (when (= action
+            "image-processed")
+     (let [[new-image-src
+            learned-image-src] (:srcs response)
+           new-image-el (md/query-selector "#imgimageSource")
+           learned-image-el (md/query-selector "#preparedImage")]
+       (md/set-src
+         new-image-el
+         new-image-src)
+       (md/set-src
+         learned-image-el
+         learned-image-src)
+       (md/end-progress-bar))
+    ))
  )
 
 (defn process-images-fn
  "Process image with light and contrast parameters"
  []
- (md/start-progress-bar
-   rurls/process-images-url)
- (let [light-slider (md/query-selector
-                         "#lightSlider")
+ (md/start-progress-bar)
+ (websocket
+   rurls/process-images-ws-url
+   {:onopen-fn process-image-ws-onopen-fn
+    :onmessage-fn process-image-ws-onmessage-fn}))
+
+(defn read-image-ws-onopen-fn
+ ""
+ [event]
+ (let [websocket-obj (aget event "target")
+       light-slider (md/query-selector
+                      "#lightSlider")
        light-slider-value (md/get-value light-slider)
        contrast-slider (md/query-selector
                          "#contrastSlider")
        contrast-slider-value (md/get-value contrast-slider)
-       image (md/query-selector "#hiddenimageSource")
-       new-image-src (md/get-value image)
-       image (md/query-selector "#hiddenPreparedImage")
-       learned-image-src (md/get-value image)]
-  (ajax
-   {:url rurls/process-images-url
-    :success-fn process-images-fn-success
-    :entity
-      {:light-value light-slider-value
-       :contrast-value contrast-slider-value
-       :image-srcs [new-image-src
-                    learned-image-src]}})
-  ))
+       space-slider (md/query-selector
+                      "#spaceSlider")
+       space-slider-value (md/get-value space-slider)
+       hooks-slider (md/query-selector
+                      "#hooksSlider")
+       hooks-slider-value (md/get-value hooks-slider)
+       matching-slider (md/query-selector
+                         "#matchingSlider")
+       matching-slider-value (md/get-value matching-slider)
+       threads-slider (md/query-selector
+                         "#threadsSlider")
+       threads-slider-value (md/get-value threads-slider)
+       rows-threads-slider (md/query-selector
+                         "#rowsThreadsSlider")
+       rows-threads-slider-value (md/get-value rows-threads-slider)
+       image-src (md/get-src "#imgimageSource")
+       {_id :value} (md/get-selected-options "#selectLearnedSource")]
+   (try
+     (.send
+       websocket-obj
+       (str
+         {:_id _id
+          :light-value light-slider-value
+          :contrast-value contrast-slider-value
+          :space-value space-slider-value
+          :hooks-value hooks-slider-value
+          :matching-value matching-slider-value
+          :threads-value threads-slider-value
+          :rows-threads-value rows-threads-slider-value
+          :image-src image-src}))
+     (catch js/Error e
+       (.error js/console e))
+    ))
+ )
+
+(defn read-image-ws-onmessage-fn
+ ""
+ [event]
+ (let [response (reader/read-string (aget event "data"))
+       action (:action response)]
+   (when (= action
+            "read-image")
+     (let [images-of-signs (:images response)
+           read-text (:read-text response)
+           textarea (wah/textarea-fn read-text)]
+      (md/remove-element-content
+        "#resultText")
+      (md/append-element
+        "#resultText"
+        textarea)
+      (md/end-please-wait))
+    ))
+ )
 
 (defn read-image-fn
  "Call server to read image"
  []
  (md/start-please-wait)
- (reset!
-   web-socket
-   (js/WebSocket. "ws://ocr:1607/read-image"))
- (aset
-   @web-socket
-   "onopen"
-   (fn [event]
-     (.log js/console event)
-     (let [light-slider (md/query-selector
-                          "#lightSlider")
-           light-slider-value (md/get-value light-slider)
-           contrast-slider (md/query-selector
-                             "#contrastSlider")
-           contrast-slider-value (md/get-value contrast-slider)
-           space-slider (md/query-selector
-                          "#spaceSlider")
-           space-slider-value (md/get-value space-slider)
-           hooks-slider (md/query-selector
-                          "#hooksSlider")
-           hooks-slider-value (md/get-value hooks-slider)
-           matching-slider (md/query-selector
-                             "#matchingSlider")
-           matching-slider-value (md/get-value matching-slider)
-           threads-slider (md/query-selector
-                             "#threadsSlider")
-           threads-slider-value (md/get-value threads-slider)
-           rows-threads-slider (md/query-selector
-                             "#rowsThreadsSlider")
-           rows-threads-slider-value (md/get-value rows-threads-slider)
-           image-src (md/get-src "#imgimageSource")
-           {_id :value} (md/get-selected-options "#selectLearnedSource")]
-       (try
-         (.send
-           @web-socket
-           (str
-             {:_id _id
-              :light-value light-slider-value
-              :contrast-value contrast-slider-value
-              :space-value space-slider-value
-              :hooks-value hooks-slider-value
-              :matching-value matching-slider-value
-              :threads-value threads-slider-value
-              :rows-threads-value rows-threads-slider-value
-              :image-src image-src}))
-         (catch js/Error e
-           (.error js/console e))
-        ))
-     ))
- (aset
-   @web-socket
-   "onmessage"
-   (fn [event]
-     (.log js/console event)
-     (let [response (reader/read-string (aget event "data"))
-           action (:action response)]
-       (when (= action
-                "read-image")
-         (let [images-of-signs (:images response)
-               read-text (:read-text response)
-               textarea (wah/textarea-fn read-text)]
-          (md/remove-element-content
-            "#resultText")
-          (md/append-element
-            "#resultText"
-            textarea)
-          (md/end-please-wait))
-        ))
-     ))
- (aset
-   @web-socket
-   "onerror"
-   (fn [event]
-     (.log js/console event))
-  )
- (aset
-   @web-socket
-   "onclose"
-   (fn [event]
-     (.log js/console event))
-  ))
+ (websocket
+   rurls/read-image-ws-url
+   {:onopen-fn read-image-ws-onopen-fn
+    :onmessage-fn read-image-ws-onmessage-fn}))
 
 (defn prepare-image-fn-success
  "Retrieving data about source document successful"

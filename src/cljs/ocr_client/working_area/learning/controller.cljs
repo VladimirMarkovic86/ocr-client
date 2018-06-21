@@ -1,5 +1,6 @@
 (ns ocr-client.working-area.learning.controller
  (:require [ajax-lib.core :refer [ajax get-response]]
+           [websocket-lib.core :refer [websocket]]
            [js-lib.core :as md]
            [ocr-client.utils :as utils]
            [ocr-client.request-urls :as rurls]
@@ -8,24 +9,11 @@
            [ocr-client.working-area.learning.html :as lh]
            [cljs.reader :as reader]))
 
-(def web-socket (atom nil))
-
-(defn process-image-fn-success
- "Successful image processing"
- [xhr]
- (let [response (get-response xhr)
-       image-src (get (:srcs response) 0)
-       image-el (md/query-selector "#preparedImage")]
-  (md/set-src image-el image-src)
-  (md/end-progress-bar))
- )
-
-(defn process-image-fn
- "Process image with light and contrast parameters"
- []
- (md/start-progress-bar
-   rurls/process-images-url)
- (let [light-slider (md/query-selector
+(defn process-image-ws-onopen-fn
+ ""
+ [event]
+ (let [websocket-obj (aget event "target")
+       light-slider (md/query-selector
                       "#lightSlider")
        light-slider-value (md/get-value light-slider)
        contrast-slider (md/query-selector
@@ -33,14 +21,42 @@
        contrast-slider-value (md/get-value contrast-slider)
        image (md/query-selector "#hiddenPreparedImage")
        image-src (md/get-value image)]
-  (ajax
-   {:url rurls/process-images-url
-    :success-fn process-image-fn-success
-    :entity
+  (.send
+    websocket-obj
+    (str
       {:light-value light-slider-value
        :contrast-value contrast-slider-value
-       :image-srcs [image-src]}}))
+       :image-srcs [image-src]}))
+  ))
+
+(defn process-image-ws-onmessage-fn
+ ""
+ [event]
+ (let [response (reader/read-string (aget event "data"))
+       action (:action response)]
+   (when (= action
+            "update-progress")
+     (let [progress-value (:progress-value response)]
+       (md/update-progress-bar
+         progress-value))
+    )
+   (when (= action
+            "image-processed")
+     (let [image-src (get (:srcs response) 0)
+           image-el (md/query-selector "#preparedImage")]
+      (md/set-src image-el image-src)
+      (md/end-progress-bar))
+    ))
  )
+
+(defn process-image-fn
+ "Process image with light and contrast parameters"
+ []
+ (md/start-progress-bar)
+ (websocket
+   rurls/process-images-ws-url
+   {:onopen-fn process-image-ws-onopen-fn
+    :onmessage-fn process-image-ws-onmessage-fn}))
 
 (defn save-sign-fn-success
  "Sign saved successfully"
@@ -108,139 +124,127 @@
              :sign-image sign-src}}))
  )
 
+(defn read-image-ws-onopen-fn
+ ""
+ [event]
+ (let [websocket-obj (aget event "target")
+       light-slider (md/query-selector
+                      "#lightSlider")
+       light-slider-value (md/get-value light-slider)
+       contrast-slider (md/query-selector
+                         "#contrastSlider")
+       contrast-slider-value (md/get-value contrast-slider)
+       space-slider (md/query-selector
+                      "#spaceSlider")
+       space-slider-value (md/get-value space-slider)
+       hooks-slider (md/query-selector
+                      "#hooksSlider")
+       hooks-slider-value (md/get-value hooks-slider)
+       matching-slider (md/query-selector
+                         "#matchingSlider")
+       matching-slider-value (md/get-value matching-slider)
+       threads-slider (md/query-selector
+                         "#threadsSlider")
+       threads-slider-value (md/get-value threads-slider)
+       rows-threads-slider (md/query-selector
+                             "#rowsThreadsSlider")
+       rows-threads-slider-value (md/get-value rows-threads-slider)
+       image (md/query-selector "#hiddenPreparedImage")
+       image-src (md/get-value image)
+       {_id :value} (md/get-selected-options "#selectSource")]
+   (try
+     (.send
+       websocket-obj
+       (str
+         {:_id _id
+          :light-value light-slider-value
+          :contrast-value contrast-slider-value
+          :space-value space-slider-value
+          :hooks-value hooks-slider-value
+          :matching-value matching-slider-value
+          :threads-value threads-slider-value
+          :rows-threads-value rows-threads-slider-value
+          :image-src image-src}))
+     (catch js/Error e
+       (.error js/console e))
+    ))
+ )
+
+(defn read-image-ws-onmessage-fn
+ ""
+ [event]
+ (let [response (reader/read-string (aget event "data"))
+       action (:action response)]
+   (when (= action
+            "read-image")
+     (let [images-of-signs (:images response)
+           read-text (:read-text response)
+           signs-count (count images-of-signs)
+           evt-fn (fn [direction]
+                   (let [displayed-image (md/query-selector
+                                          "#gallery img[style*='display: inline;']")
+                         sign-id (md/get-attr displayed-image "id")
+                         current-value (md/replace-single
+                                         sign-id
+                                         "sign"
+                                         "")
+                         current-value (reader/read-string current-value)
+                         new-value (direction
+                                     current-value
+                                     1)
+                         hidden-signs (md/query-selector-all
+                                        "#gallery img[style*='display: none;']")
+                         signs-count (inc (count hidden-signs))]
+                    (when (and (< new-value
+                                  signs-count)
+                               (< -1
+                                  new-value))
+                     (let [hidden-image (md/query-selector
+                                          (str
+                                            "#sign"
+                                            new-value))
+                           displayed-image (md/query-selector
+                                             (str
+                                               "#sign"
+                                               current-value))]
+                      (md/set-attr
+                        hidden-image
+                        "style"
+                        "display: inline;")
+                      (md/set-attr
+                        displayed-image
+                        "style"
+                        "display: none;"))
+                     ))
+                   )
+           gallery (wah/gallery-fn
+                     images-of-signs
+                     evt-fn
+                     save-sign-fn)
+           textarea (wah/textarea-fn read-text)]
+      (md/remove-element-content
+        "#gallery")
+      (when-not (empty? images-of-signs)
+       (md/append-element
+         "#gallery"
+         gallery))
+      (md/remove-element-content
+        "#resultText")
+      (md/append-element
+        "#resultText"
+        textarea)
+      (md/end-please-wait))
+    ))
+ )
+
 (defn read-image-fn
  "Call server to read image"
  []
  (md/start-please-wait)
- (reset!
-   web-socket
-   (js/WebSocket. "ws://ocr:1607/read-image"))
- (aset
-   @web-socket
-   "onopen"
-   (fn [event]
-     (.log js/console event)
-     (let [light-slider (md/query-selector
-                          "#lightSlider")
-           light-slider-value (md/get-value light-slider)
-           contrast-slider (md/query-selector
-                             "#contrastSlider")
-           contrast-slider-value (md/get-value contrast-slider)
-           space-slider (md/query-selector
-                          "#spaceSlider")
-           space-slider-value (md/get-value space-slider)
-           hooks-slider (md/query-selector
-                          "#hooksSlider")
-           hooks-slider-value (md/get-value hooks-slider)
-           matching-slider (md/query-selector
-                             "#matchingSlider")
-           matching-slider-value (md/get-value matching-slider)
-           threads-slider (md/query-selector
-                             "#threadsSlider")
-           threads-slider-value (md/get-value threads-slider)
-           rows-threads-slider (md/query-selector
-                                 "#rowsThreadsSlider")
-           rows-threads-slider-value (md/get-value rows-threads-slider)
-           image (md/query-selector "#hiddenPreparedImage")
-           image-src (md/get-value image)
-           {_id :value} (md/get-selected-options "#selectSource")]
-       (try
-         (.send
-           @web-socket
-           (str
-             {:_id _id
-              :light-value light-slider-value
-              :contrast-value contrast-slider-value
-              :space-value space-slider-value
-              :hooks-value hooks-slider-value
-              :matching-value matching-slider-value      
-              :threads-value threads-slider-value
-              :rows-threads-value rows-threads-slider-value
-              :image-src image-src}))
-         (catch js/Error e
-           (.error js/console e))
-        ))
-     ))
- (aset
-   @web-socket
-   "onmessage"
-   (fn [event]
-     (.log js/console event)
-     (let [response (reader/read-string (aget event "data"))
-           action (:action response)]
-       (when (= action
-                "read-image")
-         (let [images-of-signs (:images response)
-               read-text (:read-text response)
-               signs-count (count images-of-signs)
-               evt-fn (fn [direction]
-                       (let [displayed-image (md/query-selector
-                                              "#gallery img[style*='display: inline;']")
-                             sign-id (md/get-attr displayed-image "id")
-                             current-value (md/replace-single
-                                             sign-id
-                                             "sign"
-                                             "")
-                             current-value (reader/read-string current-value)
-                             new-value (direction
-                                         current-value
-                                         1)
-                             hidden-signs (md/query-selector-all
-                                            "#gallery img[style*='display: none;']")
-                             signs-count (inc (count hidden-signs))]
-                        (when (and (< new-value
-                                      signs-count)
-                                   (< -1
-                                      new-value))
-                         (let [hidden-image (md/query-selector
-                                              (str
-                                                "#sign"
-                                                new-value))
-                               displayed-image (md/query-selector
-                                                 (str
-                                                   "#sign"
-                                                   current-value))]
-                          (md/set-attr
-                            hidden-image
-                            "style"
-                            "display: inline;")
-                          (md/set-attr
-                            displayed-image
-                            "style"
-                            "display: none;"))
-                         ))
-                       )
-               gallery (wah/gallery-fn
-                         images-of-signs
-                         evt-fn
-                         save-sign-fn)
-               textarea (wah/textarea-fn read-text)]
-          (md/remove-element-content
-            "#gallery")
-          (when-not (empty? images-of-signs)
-           (md/append-element
-             "#gallery"
-             gallery))
-          (md/remove-element-content
-            "#resultText")
-          (md/append-element
-            "#resultText"
-            textarea)
-          (md/end-please-wait))
-        ))
-     ))
- (aset
-   @web-socket
-   "onerror"
-   (fn [event]
-     (.log js/console event))
-  )
- (aset
-   @web-socket
-   "onclose"
-   (fn [event]
-     (.log js/console event))
-  ))
+ (websocket
+   rurls/read-image-ws-url
+   {:onopen-fn read-image-ws-onopen-fn
+    :onmessage-fn read-image-ws-onmessage-fn}))
 
 (defn save-parameters-fn
  ""

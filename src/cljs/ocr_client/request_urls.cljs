@@ -12,3 +12,7 @@
 
 (def save-parameters-url "/clojure/save-parameters")
 
+(def read-image-ws-url "/websocket/read-image")
+
+(def process-images-ws-url "/websocket/process-images")
+

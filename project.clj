@@ -10,6 +10,7 @@
                     ; https://clojurescript.org/guides/quick-start#clojurescript-compiler
                     ; https://clojurescript.org/reference/dependencies
                    [org.vladimir/ajax-lib "0.1.0"]
+                   [org.vladimir/websocket-lib "0.1.0"]
                    [org.vladimir/htmlcss-lib "0.1.0"]
                    [org.vladimir/js-lib "0.1.0"]
                    [org.vladimir/framework-lib "0.1.0"]
