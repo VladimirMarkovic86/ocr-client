@@ -5,13 +5,13 @@
            [utils-lib.core :refer [round-decimals]]
            [cljs.reader :as reader]))
 
-(def entity-type "document")
+(def entity-type
+     "document")
 
 (def form-conf
   {:id :_id
    :type entity-type
-   :fields {
-            :dname {:label "Name"
+   :fields {:dname {:label "Name"
                     :field-type "input"
                     :data-type "text"}
             :dtype {:label "Document type"
@@ -27,30 +27,30 @@
                   :image]})
 
 (def columns
- {:projection [:dname
-               :dtype
-               ;:image
-               ]
-  :style
-   {:dname
-     {:content "Name"
-      :th {:style {:width "100px"}}
-      :td {:style {:width "100px"
-                   :text-align "left"}}
-      }
-    :dtype
-     {:content "Document type"
-      :th {:style {:width "100px"}}
-      :td {:style {:width "100px"
-                   :text-align "left"}}
-      }
-    :image
-     {:content "Image"
-      :th {:style {:width "100px"}}
-      :td {:style {:width "100px"
-                   :text-align "left"}}
-      }}
-   })
+     {:projection [:dname
+                   :dtype
+                   ;:image
+                   ]
+      :style
+       {:dname
+         {:content "Name"
+          :th {:style {:width "100px"}}
+          :td {:style {:width "100px"
+                       :text-align "left"}}
+          }
+        :dtype
+         {:content "Document type"
+          :th {:style {:width "100px"}}
+          :td {:style {:width "100px"
+                       :text-align "left"}}
+          }
+        :image
+         {:content "Image"
+          :th {:style {:width "100px"}}
+          :td {:style {:width "100px"
+                       :text-align "left"}}
+          }}
+       })
 
 (def query
      {:entity-type  entity-type

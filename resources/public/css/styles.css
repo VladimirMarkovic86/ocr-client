@@ -15,6 +15,9 @@ html, body {
 .body {
  height: 100%;
  background-image: linear-gradient(red, blue);
+ display: grid;
+ justify-content: center;
+ align-content: center;
 }
 
 .login {
@@ -25,6 +28,7 @@ html, body {
 
 input[type="text"],
 input[type="password"],
+input[type="email"],
 input[type="number"],
 input[type="date"] {
  border-radius: 6px;
@@ -164,5 +168,13 @@ a:hover {
 
 .progress-bar-done-number {
  color: blue;
+}
+
+.signUp h3{
+ text-align: center;
+}
+
+.signUp td:nth-child(1){
+ text-align: right;
 }
 

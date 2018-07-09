@@ -8,15 +8,17 @@
   that represents navigation menu"
  []
  (gen
-  [(div
-    (a "Create"
-       nil
-       {:onclick {:evt-fn create-entity
-                  :evt-p table-conf}}))
-   (div
-    (a "Show all"
-       nil
-       {:onclick {:evt-fn gen-table
-                  :evt-p table-conf}}))])
- )
-                   
+   [(div
+      (a
+        "Create"
+        nil
+        {:onclick {:evt-fn create-entity
+                   :evt-p table-conf}}))
+    (div
+      (a
+        "Show all"
+        nil
+        {:onclick {:evt-fn gen-table
+                   :evt-p table-conf}}))]
+  ))
+
