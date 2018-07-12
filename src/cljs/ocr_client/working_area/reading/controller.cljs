@@ -67,8 +67,7 @@
           new-image-src)
         (md/set-src
           learned-image-el
-          learned-image-src)
-        (md/end-progress-bar))
+          learned-image-src))
      ))
   )
 
@@ -80,7 +79,9 @@
   (websocket
     rurls/process-images-ws-url
     {:onopen-fn process-image-ws-onopen-fn
-     :onmessage-fn process-image-ws-onmessage-fn}))
+     :onmessage-fn process-image-ws-onmessage-fn
+     :onclose-fn utils/websocket-default-close}
+   ))
 
 (defn read-image-ws-onopen-fn
   "Onopen websocket event gather all needed data from page
@@ -156,8 +157,7 @@
           "#resultText")
         (md/append-element
           "#resultText"
-          textarea)
-        (md/end-please-wait))
+          textarea))
      ))
   )
 
@@ -169,7 +169,8 @@
   (websocket
     rurls/read-image-ws-url
     {:onopen-fn read-image-ws-onopen-fn
-     :onmessage-fn read-image-ws-onmessage-fn}))
+     :onmessage-fn read-image-ws-onmessage-fn
+     :onclose-fn utils/websocket-default-close}))
 
 (defn prepare-image-fn-success
   "Retrieving data about source document successful"

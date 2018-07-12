@@ -1,8 +1,10 @@
 (ns ocr-client.utils
   (:require [ajax-lib.core :refer [ajax get-response]]
             [js-lib.core :as md]
+            [framework-lib.core :as frm]
             [ocr-client.request-urls :as rurls]
-            [ocr-client.document.entity :as docent]))
+            [ocr-client.document.entity :as docent]
+            [cljs.reader :as reader]))
 
 (defn retrieve-documents-fn-success
   "Retrieving source documents successful"
@@ -77,4 +79,20 @@
           image-or-sign))
      )
     [@images @signs]))
+
+(defn websocket-default-close
+  ""
+  [event]
+  (md/end-progress-bar)
+    (let [response (reader/read-string (aget event "reason"))
+          action (:action response)]
+      (when (= action
+               "rejected")
+        (let [status (:status response)
+              message (:message response)]
+          (frm/popup-fn
+            {:heading status
+             :content message}))
+       ))
+ )
 

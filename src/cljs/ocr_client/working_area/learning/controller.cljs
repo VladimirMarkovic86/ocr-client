@@ -56,8 +56,7 @@
                        "#preparedImage")]
         (md/set-src
           image-el
-          image-src)
-        (md/end-progress-bar))
+          image-src))
      ))
  )
 
@@ -69,7 +68,8 @@
   (websocket
     rurls/process-images-ws-url
     {:onopen-fn process-image-ws-onopen-fn
-     :onmessage-fn process-image-ws-onmessage-fn}))
+     :onmessage-fn process-image-ws-onmessage-fn
+     :onclose-fn utils/websocket-default-close}))
 
 (defn save-sign-fn-success
   "Sign saved successfully"
@@ -275,8 +275,7 @@
           "#resultText")
         (md/append-element
           "#resultText"
-          textarea)
-        (md/end-please-wait))
+          textarea))
      ))
  )
 
@@ -288,7 +287,9 @@
   (websocket
     rurls/read-image-ws-url
     {:onopen-fn read-image-ws-onopen-fn
-     :onmessage-fn read-image-ws-onmessage-fn}))
+     :onmessage-fn read-image-ws-onmessage-fn
+     :onclose-fn utils/websocket-default-close}
+   ))
 
 (defn save-parameters-fn
   "Save parameters from form"
@@ -443,10 +444,12 @@
                               "Rows threads")
         process-btn (wah/btn-fn
                       {:evt-fn process-image-fn
-                       :value "Process"})
+                       :value "Process"
+                       :id "btnProcess"})
         read-btn (wah/btn-fn
                    {:evt-fn read-image-fn
-                    :value "Read"})
+                    :value "Read"
+                    :id "btnRead"})
         save-parameters-btn (wah/btn-fn
                               {:evt-fn save-parameters-fn
                                :value "Save parameters"})]

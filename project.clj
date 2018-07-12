@@ -15,6 +15,7 @@
                    [org.vladimir/js-lib "0.1.0"]
                    [org.vladimir/framework-lib "0.1.0"]
                    [org.vladimir/utils-lib "0.1.0"]
+                   [org.vladimir/client-test-lib "0.1.0"]
                    ]
   
   :plugins [[lein-figwheel  "0.5.14"]

@@ -3,6 +3,7 @@
                                       input div a nav]]
             [ajax-lib.core :refer [ajax get-response]]
             [js-lib.core :as md]
+            [ocr-client.test-bot :refer [run-test]]
             [ocr-client.document.controller :as pc :refer [nav-link]]
             [ocr-client.working-area.controller :as wac :refer [nav-link]]))
 
@@ -80,9 +81,17 @@
     ".content")
   (md/remove-element-content
     ".sidebar-menu")
-  (md/set-inner-html
+  (md/append-element
     ".content"
-    "Home"))
+    (gen
+      [(div
+         "Home")
+       (input
+         ""
+         {:type "button"
+          :value "Test"}
+         {:onclick {:evt-fn run-test}})])
+   ))
 
 (defn nav-fn
   "Header navigation menu"

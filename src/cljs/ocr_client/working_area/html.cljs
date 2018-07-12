@@ -35,7 +35,8 @@
      [(div
         (input
           ""
-          {:type "button"
+          {:id "btnLeft"
+           :type "button"
            :value "<-"}
           {:onclick {:evt-fn evt-fn
                      :evt-p -}})
@@ -47,7 +48,8 @@
       (div
         [(div
            @image-elements
-           {:style {:width "200px"
+           {:id "divImages"
+            :style {:width "200px"
                     :height "70px"
                     :display "grid"
                     :justify-content "center"
@@ -78,7 +80,8 @@
       (div
         (input
           ""
-          {:type "button"
+          {:id "btnRight"
+           :type "button"
            :value "->"}
           {:onclick {:evt-fn evt-fn
                      :evt-p +}})
@@ -105,12 +108,20 @@
   "Generate button HTML element"
   [{evt-fn :evt-fn
     evt-p :evt-p
-    value :value}]
+    value :value
+    id :id}]
   (gen
     (input
       ""
-      {:value value
-       :type "button"}
+      (let [attrs {:value value
+                   :type "button"}
+            attrs (if id
+                    (assoc
+                      attrs
+                      :id
+                      id)
+                    attrs)]
+        attrs)
       {:onclick {:evt-fn evt-fn
                  :evt-p evt-p}}))
  )
@@ -177,12 +188,12 @@
     [(div
        (a
          "Learning"
-         nil
+         {:id "aLearningId"}
          learning-evts))
      (div
        (a
          "Reading"
-         nil
+         {:id "aReadingId"}
          reading-evts))]
    ))
 
