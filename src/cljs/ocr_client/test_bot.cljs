@@ -27,7 +27,8 @@
       chosen-option
       "selected"
       true)
-    (md/change
+    (md/dispatch-event
+      "change"
       select-obj
       window-obj))
  )
@@ -66,6 +67,5 @@
   "Runs tests from test-cases-fn function in particular window"
   []
   (ctest/run-tests
-    test-cases-fn
-    5))
+    test-cases-fn))
 
