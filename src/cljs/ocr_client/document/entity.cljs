@@ -68,6 +68,8 @@
       :columns columns
       :form-conf form-conf
       :actions #{:details :edit :delete}
+      :search-on true
+      :search-fields [:dname :dtype]
       :render-in ".content"
       :table-class "entities"
       :table-fn gen-table})
