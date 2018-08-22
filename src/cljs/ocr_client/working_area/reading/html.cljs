@@ -10,12 +10,10 @@
     (div 
       [(div
          (fw/image-field
-           nil
-           "imageSource"
-           false
-           {:height "unset"
-            :width "unset"
-            :max-width "300px"})
+           ""
+           {:id "imageSource"
+            :style {:max-height "200px"
+                    :max-width "300px"}})
           {:style {:float "left"
                    :margin "5px"}})
        (div

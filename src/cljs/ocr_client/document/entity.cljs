@@ -12,16 +12,13 @@
   {:id :_id
    :type entity-type
    :fields {:dname {:label "Name"
-                    :field-type "input"
-                    :data-type "text"}
+                    :input-el "text"}
             :dtype {:label "Document type"
-                    :field-type "radio"
-                    :data-type "text"
+                    :input-el "radio"
                     :options ["Book page"
                               "Typewriter"]}
             :image {:label "Image"
-                    :field-type "image"
-                    :data-type "file"}}
+                    :input-el "img"}}
    :fields-order [:dname
                   :dtype
                   :image]})
@@ -67,7 +64,7 @@
      {:query query
       :columns columns
       :form-conf form-conf
-      :actions #{:details :edit :delete}
+      :actions [:details :edit :delete]
       :search-on true
       :search-fields [:dname :dtype]
       :render-in ".content"

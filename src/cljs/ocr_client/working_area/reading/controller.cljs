@@ -59,7 +59,7 @@
       (let [[new-image-src
              learned-image-src] (:srcs response)
             new-image-el (md/query-selector
-                           "#imgimageSource")
+                           "#imageSource")
             learned-image-el (md/query-selector
                                "#preparedImage")]
         (md/set-src
@@ -117,7 +117,7 @@
         rows-threads-slider-value (md/get-value
                                     rows-threads-slider)
         image-src (md/get-src
-                    "#imgimageSource")
+                    "#imageSource")
         {_id :value} (md/get-selected-options
                        "#selectLearnedSource")]
     (try

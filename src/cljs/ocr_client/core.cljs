@@ -19,3 +19,4 @@
     :logout-fn logout}))
 
 (set! (.-onload js/window) am-i-logged-in)
+
