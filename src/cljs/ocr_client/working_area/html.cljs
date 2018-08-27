@@ -1,6 +1,7 @@
 (ns ocr-client.working-area.html
   (:require [htmlcss-lib.core :refer [gen div a input label
-                                      textarea img]]))
+                                      textarea img]]
+            [language-lib.core :refer [get-label]]))
 
 (defn gallery-fn
   "Generate HTML gallery"
@@ -68,7 +69,7 @@
            (input
              ""
              {:type "button"
-              :value "Save sign"
+              :value (get-label 53)
               :style {:margin-left "unset"}}
              {:onclick {:evt-fn save-sign-fn}})
            {:style {:width "200px"
@@ -187,12 +188,12 @@
   (gen
     [(div
        (a
-         "Learning"
+         (get-label 40)
          {:id "aLearningId"}
          learning-evts))
      (div
        (a
-         "Reading"
+         (get-label 41)
          {:id "aReadingId"}
          reading-evts))]
    ))

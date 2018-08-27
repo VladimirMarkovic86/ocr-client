@@ -5,7 +5,9 @@
             [js-lib.core :as md]
             [ocr-client.test-bot :refer [run-test]]
             [ocr-client.document.controller :as pc :refer [nav-link]]
-            [ocr-client.working-area.controller :as wac :refer [nav-link]]))
+            [ocr-client.working-area.controller :as wac :refer [nav-link]]
+            [ocr-client.language.controller :as lc]
+            [language-lib.core :refer [get-label]]))
 
 (defn form
   "Generate table HTML element that contains login form"
@@ -16,7 +18,7 @@
       [(tr
          [(td
             (label
-              "email"
+              (get-label 14)
               {:for "txtEmailId"}))
           (td
             (input
@@ -29,7 +31,7 @@
        (tr
          [(td
             (label
-              "password"
+              (get-label 15)
               {:for "pswLoginId"}))
           (td
             (input
@@ -42,7 +44,7 @@
        (tr
          [(td
             (label
-              "remember me"
+              (get-label 16)
               {:for "chkRememberMeId"}))
           (td
             (input
@@ -58,14 +60,14 @@
               {:id "btnLoginId"
                :name "btnLoginN"
                :type "button"
-               :value "Login"}
+               :value (get-label 17)}
               login-evt))]
         )
        (tr
          [(td)
           (td
             (a
-              "Sign up"
+              (get-label 18)
               {:id "aSignUpId"
                :style
                  {:float "right"}}
@@ -98,19 +100,23 @@
   [logout-fn]
   (nav
     [(a
-       "Home"
+       (get-label 3)
        {:id "aHomeId"}
        {:onclick {:evt-fn home-fn}})
      (a
-       "Document"
+       (get-label 36)
        {:id "aDocumentId"}
        {:onclick {:evt-fn pc/nav-link}})
      (a
-       "Working area"
+       (get-label 35)
        {:id "aWorkingAreaId"}
        {:onclick {:evt-fn wac/nav-link}})
      (a
-       "Log out"
+       (get-label 23)
+       {:id "aLanguageId"}
+       {:onclick {:evt-fn lc/nav-link}})
+     (a
+       (get-label 2)
        {:id "aLogoutId"}
        {:onclick {:evt-fn logout-fn}})])
  )

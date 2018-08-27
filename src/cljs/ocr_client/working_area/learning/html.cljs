@@ -1,5 +1,6 @@
 (ns ocr-client.working-area.learning.html
- (:require [htmlcss-lib.core :refer [gen div select option]]))
+  (:require [htmlcss-lib.core :refer [gen div select option]]
+            [language-lib.core :refer [get-label]]))
 
 (defn learning-area-html-fn
   "Generate learning HTML"
@@ -10,7 +11,7 @@
       [(div
          (select
            (let [options (atom [(option
-                                  "- Select -"
+                                  (get-label 42)
                                   {:value "-1"})])]
              (doseq [{_id :_id
                       dname :dname

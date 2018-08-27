@@ -1,9 +1,10 @@
 (ns ocr-client.document.entity
- (:require [htmlcss-lib.core :refer [gen crt]]
-           [js-lib.core :as md]
-           [framework-lib.core :refer [gen-table]]
-           [utils-lib.core :refer [round-decimals]]
-           [cljs.reader :as reader]))
+  (:require [htmlcss-lib.core :refer [gen crt]]
+            [js-lib.core :as md]
+            [framework-lib.core :refer [gen-table]]
+            [utils-lib.core :refer [round-decimals]]
+            [cljs.reader :as reader]
+            [language-lib.core :refer [get-label]]))
 
 (def entity-type
      "document")
@@ -11,13 +12,16 @@
 (def form-conf
   {:id :_id
    :type entity-type
-   :fields {:dname {:label "Name"
-                    :input-el "text"}
-            :dtype {:label "Document type"
+   :entity-name (get-label 36)
+   :fields {:dname {:label (get-label 37)
+                    :input-el "text"
+                    :attrs {:required "required"}}
+            :dtype {:label (get-label 38)
                     :input-el "radio"
+                    :attrs {:required "required"}
                     :options ["Book page"
                               "Typewriter"]}
-            :image {:label "Image"
+            :image {:label (get-label 39)
                     :input-el "img"}}
    :fields-order [:dname
                   :dtype
@@ -30,19 +34,19 @@
                    ]
       :style
        {:dname
-         {:content "Name"
+         {:content (get-label 37)
           :th {:style {:width "100px"}}
           :td {:style {:width "100px"
                        :text-align "left"}}
           }
         :dtype
-         {:content "Document type"
+         {:content (get-label 38)
           :th {:style {:width "100px"}}
           :td {:style {:width "100px"
                        :text-align "left"}}
           }
         :image
-         {:content "Image"
+         {:content (get-label 39)
           :th {:style {:width "100px"}}
           :td {:style {:width "100px"
                        :text-align "left"}}

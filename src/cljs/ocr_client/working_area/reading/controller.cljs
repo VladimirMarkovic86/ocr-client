@@ -7,7 +7,8 @@
             [ocr-client.document.entity :as docent]
             [ocr-client.working-area.html :as wah]
             [ocr-client.working-area.reading.html :as rh]
-            [cljs.reader :as reader]))
+            [cljs.reader :as reader]
+            [language-lib.core :refer [get-label]]))
 
 (defn process-image-ws-onopen-fn
   "Onopen websocket event gather all needed data from page
@@ -206,7 +207,7 @@
                          light-slider-selector)
                        (slider-input-evts
                          light-slider-selector)
-                       "Light")
+                       (get-label 43))
         contrast-slider-selector "contrastSlider"
         contrast-slider (wah/slider-fn
                           contrast-slider-selector
@@ -216,7 +217,7 @@
                             contrast-slider-selector)
                           (slider-input-evts
                             contrast-slider-selector)
-                          "Contrast")
+                          (get-label 44))
         space-slider-selector "spaceSlider"
         space-slider (wah/slider-fn
                        space-slider-selector
@@ -228,7 +229,7 @@
                          space-slider-selector)
                        (slider-input-evts
                          space-slider-selector)
-                       "Space")
+                       (get-label 45))
         hooks-slider-selector "hooksSlider"
         hooks-slider (wah/slider-fn
                        hooks-slider-selector
@@ -240,7 +241,7 @@
                          hooks-slider-selector)
                        (slider-input-evts
                          hooks-slider-selector)
-                       "Hooks")
+                       (get-label 46))
         matching-slider-selector "matchingSlider"
         matching-slider (wah/slider-fn
                           matching-slider-selector
@@ -252,7 +253,7 @@
                             matching-slider-selector)
                           (slider-input-evts
                             matching-slider-selector)
-                          "Matching")
+                          (get-label 47))
         threads-slider-selector "threadsSlider"
         threads-slider (wah/slider-fn
                          threads-slider-selector
@@ -264,7 +265,7 @@
                            threads-slider-selector)
                          (slider-input-evts
                            threads-slider-selector)
-                         "Threads")
+                         (get-label 48))
         rows-threads-slider-selector "rowsThreadsSlider"
         rows-threads-slider (wah/slider-fn
                               rows-threads-slider-selector
@@ -276,13 +277,13 @@
                                 rows-threads-slider-selector)
                               (slider-input-evts
                                 rows-threads-slider-selector)
-                              "Rows threads")
+                              (get-label 49))
         process-btn (wah/btn-fn
                       {:evt-fn process-images-fn
-                       :value "Process"})
+                       :value (get-label 51)})
         read-btn (wah/btn-fn
                    {:evt-fn read-image-fn
-                    :value "Read"})]
+                    :value (get-label 50)})]
     (md/remove-element-content
       "#processImage")
     (md/append-element

@@ -1,6 +1,7 @@
 (ns ocr-client.working-area.reading.html
- (:require [htmlcss-lib.core :refer [gen div select option]]
-           [framework-lib.core :as fw]))
+  (:require [htmlcss-lib.core :refer [gen div select option]]
+            [framework-lib.core :as fw]
+            [language-lib.core :refer [get-label]]))
 
 (defn reading-area-html-fn
   "Generate reading area HTML"
@@ -20,7 +21,7 @@
          [(div
             (select
               (let [options (atom [(option
-                                     "- Select -"
+                                     (get-label 42)
                                      {:value "-1"})])]
                (doseq [{_id :_id
                         dname :dname
