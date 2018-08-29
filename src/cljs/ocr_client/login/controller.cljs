@@ -1,9 +1,10 @@
 (ns ocr-client.login.controller
-  (:require [ajax-lib.core :refer [ajax get-response]]
+  (:require [ajax-lib.core :refer [ajax sjax get-response]]
             [js-lib.core :as md]
             [utils-lib.core :as utils]
             [ocr-client.login.html :as lhtml]
-            [ocr-client.sign-up.controller :as suc]))
+            [ocr-client.sign-up.controller :as suc]
+            [language-lib.core :refer [cached-labels]]))
 
 (def login-url
      "/clojure/login")
@@ -71,14 +72,36 @@
       )
     1000))
 
+(defn change-language-fn
+  ""
+  [evt-p
+   element
+   event]
+  (reset!
+    cached-labels
+    [])
+  (let [xhr (sjax
+              {:url "/clojure/set-language"
+               :entity evt-p})]
+    (.reload
+      js/location))
+ )
+
 (defn main-page
   "Open main page"
   [xhr
    {logout-fn :logout-fn}]
-  (md/append-element
-    ".body"
-    (lhtml/template logout-fn))
- )
+  (let [response (get-response xhr)
+        username (:username response)
+        language-name (:language-name response)]
+    (md/append-element
+      ".body"
+      (lhtml/template
+        logout-fn
+        username
+        change-language-fn
+        language-name))
+   ))
 
 (defn login-success
   "Login success"
