@@ -8,7 +8,9 @@
             [ocr-client.working-area.html :as wah]
             [ocr-client.working-area.reading.html :as rh]
             [cljs.reader :as reader]
-            [language-lib.core :refer [get-label]]))
+            [language-lib.core :refer [get-label]]
+            [ocr-middle.functionalities :as omfns]
+            [common-client.allowed-actions.controller :refer [allowed-actions]]))
 
 (defn process-image-ws-onopen-fn
   "Onopen websocket event gather all needed data from page
@@ -207,7 +209,7 @@
                          light-slider-selector)
                        (slider-input-evts
                          light-slider-selector)
-                       (get-label 43))
+                       (get-label 1009))
         contrast-slider-selector "contrastSlider"
         contrast-slider (wah/slider-fn
                           contrast-slider-selector
@@ -217,7 +219,7 @@
                             contrast-slider-selector)
                           (slider-input-evts
                             contrast-slider-selector)
-                          (get-label 44))
+                          (get-label 1010))
         space-slider-selector "spaceSlider"
         space-slider (wah/slider-fn
                        space-slider-selector
@@ -229,7 +231,7 @@
                          space-slider-selector)
                        (slider-input-evts
                          space-slider-selector)
-                       (get-label 45))
+                       (get-label 1011))
         hooks-slider-selector "hooksSlider"
         hooks-slider (wah/slider-fn
                        hooks-slider-selector
@@ -241,7 +243,7 @@
                          hooks-slider-selector)
                        (slider-input-evts
                          hooks-slider-selector)
-                       (get-label 46))
+                       (get-label 1012))
         matching-slider-selector "matchingSlider"
         matching-slider (wah/slider-fn
                           matching-slider-selector
@@ -253,7 +255,7 @@
                             matching-slider-selector)
                           (slider-input-evts
                             matching-slider-selector)
-                          (get-label 47))
+                          (get-label 1013))
         threads-slider-selector "threadsSlider"
         threads-slider (wah/slider-fn
                          threads-slider-selector
@@ -265,7 +267,7 @@
                            threads-slider-selector)
                          (slider-input-evts
                            threads-slider-selector)
-                         (get-label 48))
+                         (get-label 1014))
         rows-threads-slider-selector "rowsThreadsSlider"
         rows-threads-slider (wah/slider-fn
                               rows-threads-slider-selector
@@ -277,13 +279,13 @@
                                 rows-threads-slider-selector)
                               (slider-input-evts
                                 rows-threads-slider-selector)
-                              (get-label 49))
+                              (get-label 1015))
         process-btn (wah/btn-fn
                       {:evt-fn process-images-fn
-                       :value (get-label 51)})
+                       :value (get-label 1017)})
         read-btn (wah/btn-fn
                    {:evt-fn read-image-fn
-                    :value (get-label 50)})]
+                    :value (get-label 1016)})]
     (md/remove-element-content
       "#processImage")
     (md/append-element
@@ -326,12 +328,18 @@
       rows-threads-slider)
     (md/remove-element-content
       "#process")
-    (md/append-element
-      "#process"
-      process-btn)
-    (md/append-element
-      "#process"
-      read-btn)
+    (when (contains?
+            @allowed-actions
+            omfns/process-images)
+      (md/append-element
+        "#process"
+        process-btn))
+    (when (contains?
+            @allowed-actions
+            omfns/read-image)
+      (md/append-element
+        "#process"
+        read-btn))
     (md/end-please-wait))
  )
 

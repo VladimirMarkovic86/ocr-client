@@ -4,7 +4,8 @@
             [framework-lib.core :refer [gen-table]]
             [utils-lib.core :refer [round-decimals]]
             [cljs.reader :as reader]
-            [language-lib.core :refer [get-label]]))
+            [language-lib.core :refer [get-label]]
+            [common-client.allowed-actions.controller :refer [allowed-actions]]))
 
 (def entity-type
      "document")
@@ -12,16 +13,16 @@
 (def form-conf
   {:id :_id
    :type entity-type
-   :entity-name (get-label 36)
-   :fields {:dname {:label (get-label 37)
+   :entity-name (get-label 1002)
+   :fields {:dname {:label (get-label 1003)
                     :input-el "text"
                     :attrs {:required "required"}}
-            :dtype {:label (get-label 38)
+            :dtype {:label (get-label 1004)
                     :input-el "radio"
                     :attrs {:required "required"}
                     :options ["Book page"
                               "Typewriter"]}
-            :image {:label (get-label 39)
+            :image {:label (get-label 1005)
                     :input-el "img"}}
    :fields-order [:dname
                   :dtype
@@ -34,19 +35,19 @@
                    ]
       :style
        {:dname
-         {:content (get-label 37)
+         {:content (get-label 1002)
           :th {:style {:width "100px"}}
           :td {:style {:width "100px"
                        :text-align "left"}}
           }
         :dtype
-         {:content (get-label 38)
+         {:content (get-label 1003)
           :th {:style {:width "100px"}}
           :td {:style {:width "100px"
                        :text-align "left"}}
           }
         :image
-         {:content (get-label 39)
+         {:content (get-label 1004)
           :th {:style {:width "100px"}}
           :td {:style {:width "100px"
                        :text-align "left"}}
@@ -64,16 +65,19 @@
       :rows  25
       :collation {:locale "sr"}})
 
-(def table-conf
-     {:query query
-      :columns columns
-      :form-conf form-conf
-      :actions [:details :edit :delete]
-      :search-on true
-      :search-fields [:dname :dtype]
-      :render-in ".content"
-      :table-class "entities"
-      :table-fn gen-table})
+(defn table-conf-fn
+  ""
+  []
+  {:query query
+   :columns columns
+   :form-conf form-conf
+   :actions [:details :edit :delete]
+   :allowed-actions @allowed-actions
+   :search-on true
+   :search-fields [:dname :dtype]
+   :render-in ".content"
+   :table-class "entities"
+   :table-fn gen-table})
 
 (def query-documents-select-tag
      {:entity-type  entity-type

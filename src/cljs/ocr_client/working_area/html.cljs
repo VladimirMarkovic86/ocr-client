@@ -1,7 +1,9 @@
 (ns ocr-client.working-area.html
   (:require [htmlcss-lib.core :refer [gen div a input label
                                       textarea img]]
-            [language-lib.core :refer [get-label]]))
+            [language-lib.core :refer [get-label]]
+            [ocr-middle.functionalities :as omfns]
+            [common-client.allowed-actions.controller :refer [allowed-actions]]))
 
 (defn gallery-fn
   "Generate HTML gallery"
@@ -66,12 +68,15 @@
                     :justify-content "center"
                     :align-content "center"}})
          (div
-           (input
-             ""
-             {:type "button"
-              :value (get-label 53)
-              :style {:margin-left "unset"}}
-             {:onclick {:evt-fn save-sign-fn}})
+           (when (contains?
+                   @allowed-actions
+                   omfns/save-sign)
+             (input
+               ""
+               {:type "button"
+                :value (get-label 1019)
+                :style {:margin-left "unset"}}
+               {:onclick {:evt-fn save-sign-fn}}))
            {:style {:width "200px"
                     :display "grid"
                     :justify-content "center"}})]
@@ -186,15 +191,46 @@
   [learning-evts
    reading-evts]
   (gen
-    [(div
-       (a
-         (get-label 40)
-         {:id "aLearningId"}
-         learning-evts))
-     (div
-       (a
-         (get-label 41)
-         {:id "aReadingId"}
-         reading-evts))]
-   ))
+    [(when (and (contains?
+                  @allowed-actions
+                  omfns/document-read)
+             (or (contains?
+                   @allowed-actions
+                   omfns/process-images)
+                 (contains?
+                   @allowed-actions
+                   omfns/read-image)
+                 (contains?
+                   @allowed-actions
+                   omfns/save-sign)
+                 (contains?
+                   @allowed-actions
+                   omfns/save-parameters))
+            )
+       (div
+         (a
+           (get-label 1006)
+           {:id "aLearningId"}
+           learning-evts))
+      )
+     (when (and (contains?
+                  @allowed-actions
+                  omfns/document-read)
+                (or (contains?
+                      @allowed-actions
+                      omfns/process-images)
+                    (contains?
+                      @allowed-actions
+                      omfns/read-image)
+                    (contains?
+                      @allowed-actions
+                      omfns/save-parameters))
+            )
+       (div
+         (a
+           (get-label 1007)
+           {:id "aReadingId"}
+           reading-evts))
+      )])
+ )
 

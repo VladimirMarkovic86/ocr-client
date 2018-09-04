@@ -1,7 +1,7 @@
 (ns ocr-client.document.controller
   (:require [js-lib.core :as md]
             [framework-lib.core :refer [gen-table]]
-            [ocr-client.document.entity :refer [table-conf]]
+            [ocr-client.document.entity :refer [table-conf-fn]]
             [ocr-client.document.html :as ohtml]))
 
 (defn nav-link
@@ -11,7 +11,7 @@
     ".content")
   (md/append-element
     ".content"
-    (gen-table table-conf))
+    (gen-table (table-conf-fn)))
   (md/remove-element-content
     ".sidebar-menu")
   (md/append-element

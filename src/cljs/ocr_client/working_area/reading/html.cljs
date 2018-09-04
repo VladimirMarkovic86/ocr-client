@@ -21,7 +21,7 @@
          [(div
             (select
               (let [options (atom [(option
-                                     (get-label 42)
+                                     (get-label 1008)
                                      {:value "-1"})])]
                (doseq [{_id :_id
                         dname :dname
