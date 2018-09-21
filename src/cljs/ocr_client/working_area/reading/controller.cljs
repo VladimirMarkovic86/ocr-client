@@ -3,7 +3,8 @@
             [websocket-lib.core :refer [websocket]]
             [js-lib.core :as md]
             [ocr-client.utils :as utils]
-            [ocr-client.request-urls :as rurls]
+            [common-middle.request-urls :as rurls]
+            [ocr-middle.request-urls :as orurls]
             [ocr-client.document.entity :as docent]
             [ocr-client.working-area.html :as wah]
             [ocr-client.working-area.reading.html :as rh]
@@ -80,7 +81,7 @@
   []
   (md/start-progress-bar)
   (websocket
-    rurls/process-images-ws-url
+    orurls/process-images-ws-url
     {:onopen-fn process-image-ws-onopen-fn
      :onmessage-fn process-image-ws-onmessage-fn
      :onclose-fn utils/websocket-default-close}
@@ -170,7 +171,7 @@
   []
   (md/start-please-wait)
   (websocket
-    rurls/read-image-ws-url
+    orurls/read-image-ws-url
     {:onopen-fn read-image-ws-onopen-fn
      :onmessage-fn read-image-ws-onmessage-fn
      :onclose-fn utils/websocket-default-close}))

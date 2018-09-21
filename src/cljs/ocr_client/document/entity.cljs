@@ -10,7 +10,9 @@
 (def entity-type
      "document")
 
-(def form-conf
+(defn form-conf-fn
+  ""
+  []
   {:id :_id
    :type entity-type
    :entity-name (get-label 1002)
@@ -28,49 +30,53 @@
                   :dtype
                   :image]})
 
-(def columns
-     {:projection [:dname
-                   :dtype
-                   ;:image
-                   ]
-      :style
-       {:dname
-         {:content (get-label 1002)
-          :th {:style {:width "100px"}}
-          :td {:style {:width "100px"
-                       :text-align "left"}}
-          }
-        :dtype
-         {:content (get-label 1003)
-          :th {:style {:width "100px"}}
-          :td {:style {:width "100px"
-                       :text-align "left"}}
-          }
-        :image
-         {:content (get-label 1004)
-          :th {:style {:width "100px"}}
-          :td {:style {:width "100px"
-                       :text-align "left"}}
-          }}
-       })
+(defn columns-fn
+  ""
+  []
+  {:projection [:dname
+                :dtype
+                ;:image
+                ]
+   :style
+    {:dname
+      {:content (get-label 1002)
+       :th {:style {:width "100px"}}
+       :td {:style {:width "100px"
+                    :text-align "left"}}
+       }
+     :dtype
+      {:content (get-label 1003)
+       :th {:style {:width "100px"}}
+       :td {:style {:width "100px"
+                    :text-align "left"}}
+       }
+     :image
+      {:content (get-label 1004)
+       :th {:style {:width "100px"}}
+       :td {:style {:width "100px"
+                    :text-align "left"}}
+       }}
+    })
 
-(def query
-     {:entity-type  entity-type
-      :entity-filter  {}
-      :projection  (:projection columns)
-      :projection-include  true
-      :qsort  {:dname 1}
-      :pagination  true
-      :current-page  0
-      :rows  25
-      :collation {:locale "sr"}})
+(defn query-fn
+  ""
+  []
+  {:entity-type  entity-type
+   :entity-filter  {}
+   :projection  (:projection (columns-fn))
+   :projection-include  true
+   :qsort  {:dname 1}
+   :pagination  true
+   :current-page  0
+   :rows  25
+   :collation {:locale "sr"}})
 
 (defn table-conf-fn
   ""
   []
-  {:query query
-   :columns columns
-   :form-conf form-conf
+  {:query (query-fn)
+   :columns (columns-fn)
+   :form-conf (form-conf-fn)
    :actions [:details :edit :delete]
    :allowed-actions @allowed-actions
    :search-on true
@@ -80,11 +86,11 @@
    :table-fn gen-table})
 
 (def query-documents-select-tag
-     {:entity-type  entity-type
-      :entity-filter  {}
-      :projection  [:dname :dtype]
-      :projection-include  true
-      :qsort  {:dname 1}
-      :pagination  false
+     {:entity-type entity-type
+      :entity-filter {}
+      :projection [:dname :dtype]
+      :projection-include true
+      :qsort {:dname 1}
+      :pagination false
       :collation {:locale "sr"}})
 

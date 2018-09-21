@@ -1,5 +1,5 @@
 (ns ocr-client.controller
-  (:require [ajax-lib.core :refer [ajax]]
+  (:require [ajax-lib.core :refer [ajax base-url with-credentials]]
             [ocr-client.html :as ht]
             [ocr-middle.functionalities :as fns]
             [common-client.role.entity :as re]
@@ -9,14 +9,21 @@
                                                     custom-menu
                                                     logout-fn
                                                     logout-success
-                                                    logout-success-fn]]))
-
-(def am-i-logged-in-url
-     "/clojure/am-i-logged-in")
+                                                    logout-success-fn]]
+            [common-middle.request-urls :as rurls]))
 
 (defn am-i-logged-in
   "Check if session is active"
   []
+  (reset!
+    base-url
+    "https://ocr:1602")
+  (reset!
+    with-credentials
+    true)
+  #_(reset!
+    base-url
+    "/clojure")
   (reset!
     custom-menu
     ht/custom-menu)
@@ -30,7 +37,7 @@
     re/functionalities
     fns/functionalities)
   (ajax
-    {:url am-i-logged-in-url
+    {:url rurls/am-i-logged-in-url
      :success-fn main-page
      :error-fn redirect-to-login
      :entity {:user "it's me"}}))

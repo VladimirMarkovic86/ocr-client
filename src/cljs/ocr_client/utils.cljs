@@ -2,7 +2,7 @@
   (:require [ajax-lib.core :refer [ajax get-response]]
             [js-lib.core :as md]
             [framework-lib.core :as frm]
-            [ocr-client.request-urls :as rurls]
+            [common-middle.request-urls :as rurls]
             [ocr-client.document.entity :as docent]
             [cljs.reader :as reader]))
 

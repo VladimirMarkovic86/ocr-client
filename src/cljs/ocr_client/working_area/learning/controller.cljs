@@ -3,7 +3,8 @@
             [websocket-lib.core :refer [websocket]]
             [js-lib.core :as md]
             [ocr-client.utils :as utils]
-            [ocr-client.request-urls :as rurls]
+            [common-middle.request-urls :as rurls]
+            [ocr-middle.request-urls :as orurls]
             [ocr-client.document.entity :as docent]
             [ocr-client.working-area.html :as wah]
             [ocr-client.working-area.learning.html :as lh]
@@ -69,7 +70,7 @@
   []
   (md/start-progress-bar)
   (websocket
-    rurls/process-images-ws-url
+    orurls/process-images-ws-url
     {:onopen-fn process-image-ws-onopen-fn
      :onmessage-fn process-image-ws-onmessage-fn
      :onclose-fn utils/websocket-default-close}))
@@ -141,7 +142,7 @@
         sign-src (md/get-src
                    "#gallery img[style*='display: inline;']")]
     (ajax
-      {:url rurls/save-sign-url
+      {:url orurls/save-sign-url
        :success-fn save-sign-fn-success
        :entity {:entity-type docent/entity-type
                 :entity-filter {:_id _id}
@@ -288,7 +289,7 @@
   []
   (md/start-please-wait)
   (websocket
-    rurls/read-image-ws-url
+    orurls/read-image-ws-url
     {:onopen-fn read-image-ws-onopen-fn
      :onmessage-fn read-image-ws-onmessage-fn
      :onclose-fn utils/websocket-default-close}
@@ -329,7 +330,7 @@
         {_id :value} (md/get-selected-options
                        "#selectSource")]
     (ajax
-      {:url rurls/save-parameters-url
+      {:url orurls/save-parameters-url
        :success-fn (fn [] (md/end-please-wait))
        :entity
         {:_id _id
