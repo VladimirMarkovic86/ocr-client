@@ -11,7 +11,7 @@
      "document")
 
 (defn form-conf-fn
-  ""
+  "Form configuration for document entity"
   []
   {:id :_id
    :type entity-type
@@ -31,7 +31,7 @@
                   :image]})
 
 (defn columns-fn
-  ""
+  "Table columns for document entity"
   []
   {:projection [:dname
                 :dtype
@@ -59,7 +59,7 @@
     })
 
 (defn query-fn
-  ""
+  "Table query for document entity"
   []
   {:entity-type  entity-type
    :entity-filter  {}
@@ -72,7 +72,7 @@
    :collation {:locale "sr"}})
 
 (defn table-conf-fn
-  ""
+  "Table configuration for document entity"
   []
   {:query (query-fn)
    :columns (columns-fn)

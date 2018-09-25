@@ -81,18 +81,18 @@
     [@images @signs]))
 
 (defn websocket-default-close
-  ""
+  "Default close of websocket"
   [event]
   (md/end-progress-bar)
-    (let [response (reader/read-string (aget event "reason"))
-          action (:action response)]
-      (when (= action
-               "rejected")
-        (let [status (:status response)
-              message (:message response)]
-          (frm/popup-fn
-            {:heading status
-             :content message}))
-       ))
+  (let [response (reader/read-string (aget event "reason"))
+        action (:action response)]
+    (when (= action
+             "rejected")
+      (let [status (:status response)
+            message (:message response)]
+        (frm/popup-fn
+          {:heading status
+           :content message}))
+     ))
  )
 

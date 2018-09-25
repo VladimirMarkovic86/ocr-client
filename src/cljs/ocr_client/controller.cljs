@@ -1,5 +1,6 @@
 (ns ocr-client.controller
   (:require [ajax-lib.core :refer [ajax base-url with-credentials]]
+            [websocket-lib.core :refer [base-ws-url]]
             [ocr-client.html :as ht]
             [ocr-middle.functionalities :as fns]
             [common-client.role.entity :as re]
@@ -21,6 +22,9 @@
   (reset!
     with-credentials
     true)
+  (reset!
+    base-ws-url
+    "wss://ocr:1622")
   #_(reset!
     base-url
     "/clojure")
