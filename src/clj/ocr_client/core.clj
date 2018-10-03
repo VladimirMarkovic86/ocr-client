@@ -20,7 +20,7 @@
       nil
       1612
       {:keystore-file-path
-        "/home/vladimir/workspace/certificate/jks/ocr_client.jks"
+        "certificate/ocr_client.jks"
        :keystore-password
         "ultras12"})
     (catch Exception e
