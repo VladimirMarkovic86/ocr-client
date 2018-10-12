@@ -123,7 +123,9 @@
         image-src (md/get-src
                     "#imageSource")
         {_id :value} (md/get-selected-options
-                       "#selectLearnedSource")]
+                       "#selectLearnedSource")
+        _id (reader/read-string
+              _id)]
     (try
       (.send
         websocket-obj
@@ -349,7 +351,9 @@
   []
   (md/start-please-wait)
   (let [{_id :value} (md/get-selected-options
-                       "#selectLearnedSource")]
+                       "#selectLearnedSource")
+        _id (reader/read-string
+              _id)]
    (ajax
      {:url rurls/get-entity-url
       :success-fn prepare-image-fn-success

@@ -137,6 +137,8 @@
   (md/start-please-wait)
   (let [{_id :value} (md/get-selected-options
                        "#selectSource")
+        _id (reader/read-string
+              _id)
         sign-value (md/get-value
                      "#signValue")
         sign-src (md/get-src
@@ -189,7 +191,9 @@
         image-src (md/get-value
                     image)
         {_id :value} (md/get-selected-options
-                       "#selectSource")]
+                       "#selectSource")
+        _id (reader/read-string
+              _id)]
     (try
       (.send
         websocket-obj
@@ -328,7 +332,9 @@
         rows-threads-slider-value (md/get-value
                                     rows-threads-slider)
         {_id :value} (md/get-selected-options
-                       "#selectSource")]
+                       "#selectSource")
+        _id (reader/read-string
+              _id)]
     (ajax
       {:url orurls/save-parameters-url
        :success-fn (fn [] (md/end-please-wait))
@@ -526,6 +532,8 @@
   (md/start-please-wait)
   (let [{_id :value} (md/get-selected-options
                        "#selectSource")
+        _id (reader/read-string
+              _id)
         source-select (md/query-selector
                         "#selectSource")]
     (md/set-attr
