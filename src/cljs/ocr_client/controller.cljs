@@ -24,7 +24,7 @@
     true)
   (reset!
     base-ws-url
-    "wss://ocr:1622")
+    "wss://ocr:1602")
   #_(reset!
     base-url
     "/clojure")
