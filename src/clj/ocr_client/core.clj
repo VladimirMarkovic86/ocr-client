@@ -1,4 +1,5 @@
 (ns ocr-client.core
+  (:gen-class)
   (:require [ajax-lib.http.status-code :as stc]
             [ajax-lib.http.mime-type :as mt]
             [ajax-lib.http.entity-header :as eh]
