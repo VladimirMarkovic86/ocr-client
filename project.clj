@@ -16,7 +16,7 @@
                  [org.clojars.vladimirmarkovic86/ocr-middle "0.1.0"]
                  [org.clojars.vladimirmarkovic86/common-client "0.2.0"]
                  [org.clojars.vladimirmarkovic86/common-middle "0.1.0"]
-                 [org.clojars.vladimirmarkovic86/server-lib "0.3.1"]
+                 [org.clojars.vladimirmarkovic86/server-lib "0.3.7"]
                  ]
 
   :min-lein-version "2.0.0"
