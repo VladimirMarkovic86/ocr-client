@@ -16,15 +16,31 @@
 (defn am-i-logged-in
   "Check if session is active"
   []
-  (reset!
-    base-url
-    "https://ocr:1602")
+  (let [base-uri (.-baseURI
+                   js/document)
+        base-uri (if (< -1
+                        (.indexOf
+                          base-uri
+                          "herokuapp"))
+                   "https://ocr-server-clj.herokuapp.com"
+                   "https://ocr:1602")]
+    (reset!
+      base-url
+      base-uri))
   (reset!
     with-credentials
     true)
-  (reset!
-    base-ws-url
-    "wss://ocr:1602")
+  (let [base-ws-uri (.-baseURI
+                      js/document)
+        base-ws-uri (if (< -1
+                           (.indexOf
+                             base-ws-uri
+                             "herokuapp"))
+                      "wss://ocr-server-clj.herokuapp.com"
+                      "wss://ocr:1602")]
+    (reset!
+      base-ws-url
+      base-ws-uri))
   #_(reset!
     base-url
     "/clojure")

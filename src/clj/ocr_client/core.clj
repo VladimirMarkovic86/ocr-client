@@ -20,15 +20,25 @@
           port (if port
                  (read-string
                    port)
-                 1612)]
+                 1612)
+          certificates {:keystore-file-path
+                         "certificate/ocr_client.jks"
+                        :keystore-password
+                         "ultras12"}
+          certificates (when-not (System/getenv "CERTIFICATES")
+                         certificates)
+          thread-pool-size (System/getenv "THREAD_POOL_SIZE")]
+      (when thread-pool-size
+        (reset!
+          srvr/thread-pool-size
+          (read-string
+            thread-pool-size))
+       )
       (srvr/start-server
         routing-not-found
         nil
         port
-        {:keystore-file-path
-          "certificate/ocr_client.jks"
-         :keystore-password
-          "ultras12"}))
+        certificates))
     (catch Exception e
       (println (.getMessage e))
      ))
