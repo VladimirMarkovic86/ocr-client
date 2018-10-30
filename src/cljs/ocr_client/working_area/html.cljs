@@ -144,7 +144,8 @@
        (label
          label-text)
        {:style {:float "left"
-                :width "100px"}})
+                :width "250px"
+                :text-align "right"}})
      
      (input
        ""

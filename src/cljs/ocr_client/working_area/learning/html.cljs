@@ -55,6 +55,9 @@
             {:id "rowsThreads"})
           (div
             ""
+            {:id "unknownSignCountLimit"})
+          (div
+            ""
             {:id "process"})]
          {:id "image"})
        (div

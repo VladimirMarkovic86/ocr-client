@@ -184,6 +184,10 @@
                               "#rowsThreadsSlider")
         rows-threads-slider-value (md/get-value
                                     rows-threads-slider)
+        unknown-sign-count-limit-slider (md/query-selector
+                                          "#unknownSignCountLimitSlider")
+        unknown-sign-count-limit-slider-value (md/get-value
+                                                unknown-sign-count-limit-slider)
         image (md/query-selector
                 "#hiddenPreparedImage")
         image-src (md/get-value
@@ -202,6 +206,7 @@
            :matching-value matching-slider-value
            :threads-value threads-slider-value
            :rows-threads-value rows-threads-slider-value
+           :unknown-sign-count-limit-value unknown-sign-count-limit-slider-value
            :image-src image-src}))
       (catch js/Error e
         (.error js/console e))
@@ -327,6 +332,10 @@
                               "#rowsThreadsSlider")
         rows-threads-slider-value (md/get-value
                                     rows-threads-slider)
+        unknown-sign-count-limit-slider (md/query-selector
+                                          "#unknownSignCountLimitSlider")
+        unknown-sign-count-limit-slider-value (md/get-value
+                                                unknown-sign-count-limit-slider)
         {_id :value} (md/get-selected-options
                        "#selectSource")]
     (ajax
@@ -340,7 +349,8 @@
          :hooks-value hooks-slider-value
          :matching-value matching-slider-value
          :threads-value threads-slider-value
-         :rows-threads-value rows-threads-slider-value}}))
+         :rows-threads-value rows-threads-slider-value
+         :unknown-sign-count-limit-value unknown-sign-count-limit-slider-value}}))
  )
 
 (defn prepare-image-fn-success
@@ -356,6 +366,7 @@
         matching-value (:matching data)
         threads-value (:threads data)
         rows-threads-value (:rows-threads data)
+        unknown-sign-count-limit-value (:unknown-sign-count-limit data)
         image (wah/image-fn
                 src)
         slider-evts (fn [id]
@@ -446,6 +457,18 @@
                               (slider-input-evts
                                 rows-threads-slider-selector)
                               (get-label 1015))
+        unknown-sign-count-limit-slider-selector "unknownSignCountLimitSlider"
+        unknown-sign-count-limit-slider (wah/slider-fn
+                                          unknown-sign-count-limit-slider-selector
+                                          {:min "0"
+                                           :max "50"
+                                           :value (or unknown-sign-count-limit-value
+                                                      "25")}
+                                          (slider-evts
+                                            unknown-sign-count-limit-slider-selector)
+                                          (slider-input-evts
+                                            unknown-sign-count-limit-slider-selector)
+                                          (get-label 1020))
         process-btn (wah/btn-fn
                       {:evt-fn process-image-fn
                        :value (get-label 1017)
@@ -497,6 +520,11 @@
     (md/append-element
       "#rowsThreads"
       rows-threads-slider)
+    (md/remove-element-content
+      "#unknownSignCountLimit")
+    (md/append-element
+      "#unknownSignCountLimit"
+      unknown-sign-count-limit-slider)
     (md/remove-element-content
       "#process")
     (when (contains?
