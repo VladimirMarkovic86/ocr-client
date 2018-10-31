@@ -4,6 +4,7 @@
             [common-client.allowed-actions.controller :refer [allowed-actions]]
             [ocr-client.document.controller :as dc]
             [ocr-client.working-area.controller :as wac]
+            [ocr-client.test-bot :refer [run-test]]
             [language-lib.core :refer [get-label]]))
 
 (defn custom-menu
@@ -31,6 +32,13 @@
      (a
        (get-label 1001)
        {:id "aWorkingAreaId"}
-       {:onclick {:evt-fn wac/nav-link}}))]
+       {:onclick {:evt-fn wac/nav-link}}))
+   (when (contains?
+           @allowed-actions
+           omfns/test-document-entity)
+     (a
+       (get-label 1021)
+       {:id "aTestDocumentId"}
+       {:onclick {:evt-fn run-test}}))]
  )
 

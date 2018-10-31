@@ -11,7 +11,6 @@
   [window-number
    window-obj]
   (opener-console
-    window-obj
     (str
       window-number
       " select-document-for-reading"))
