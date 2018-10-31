@@ -34,6 +34,8 @@ lein run
 
 By default project listens on port 1612, open browser and go to https://ocr:1612.
 
+**For this to work you must start up ocr-server project also**
+
 ## Authors
 
 * **Vladimir Markovic** - [VladimirMarkovic86](https://github.com/VladimirMarkovic86)
