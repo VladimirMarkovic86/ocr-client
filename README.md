@@ -32,7 +32,7 @@ and run project with this command:
 lein run
 ```
 
-By default project listens on port 1612, open browser and go to [ocr](https://ocr:1612).
+By default project listens on port 1612, open browser and go to https://ocr:1612.
 
 ## Authors
 
