@@ -5,10 +5,11 @@
             [utils-lib.core :refer [round-decimals]]
             [cljs.reader :as reader]
             [language-lib.core :refer [get-label]]
-            [common-client.allowed-actions.controller :refer [allowed-actions]]))
+            [common-client.allowed-actions.controller :refer [allowed-actions]]
+            [ocr-middle.collection-names :refer [document-cname]]))
 
 (def entity-type
-     "document")
+     document-cname)
 
 (defn form-conf-fn
   "Form configuration for document entity"
