@@ -23,8 +23,10 @@
             :dtype {:label (get-label 1004)
                     :input-el "radio"
                     :attrs {:required "required"}
-                    :options ["Book page"
-                              "Typewriter"]}
+                    :options [[(get-label 1022)
+                               "book_page"]
+                              [(get-label 1023)
+                               "typewriter"]]}
             :image {:label (get-label 1005)
                     :input-el "img"}}
    :fields-order [:dname
