@@ -3,15 +3,16 @@
             [websocket-lib.core :refer [base-ws-url]]
             [ocr-client.html :as ht]
             [ocr-middle.functionalities :as fns]
+            [common-middle.request-urls :as rurls]
             [common-client.role.entity :as re]
             [common-client.login.controller :refer [redirect-to-login
                                                     main-page
                                                     logout
                                                     custom-menu
+                                                    home-page-content
                                                     logout-fn
                                                     logout-success
-                                                    logout-success-fn]]
-            [common-middle.request-urls :as rurls]))
+                                                    logout-success-fn]]))
 
 (defn am-i-logged-in
   "Check if session is active"
@@ -23,7 +24,7 @@
                           base-uri
                           "herokuapp"))
                    "https://ocr-server-clj.herokuapp.com"
-                   "https://ocr:1602")]
+                   "https://192.168.1.86:1602")]
     (reset!
       base-url
       base-uri))
@@ -37,7 +38,7 @@
                              base-ws-uri
                              "herokuapp"))
                       "wss://ocr-server-clj.herokuapp.com"
-                      "wss://ocr:1602")]
+                      "wss://192.168.1.86:1602")]
     (reset!
       base-ws-url
       base-ws-uri))
@@ -47,6 +48,9 @@
   (reset!
     custom-menu
     ht/custom-menu)
+  (reset!
+    home-page-content
+    (ht/home-page-content))
   (reset!
     logout-fn
     logout)

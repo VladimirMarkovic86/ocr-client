@@ -1,9 +1,14 @@
 (ns ocr-client.utils
   (:require [ajax-lib.core :refer [ajax get-response]]
             [js-lib.core :as md]
+            [htmlcss-lib.core :refer [gen div input img textarea
+                                      label]]
             [framework-lib.core :as frm]
+            [language-lib.core :refer [get-label]]
             [common-middle.request-urls :as rurls]
+            [common-client.allowed-actions.controller :refer [allowed-actions]]
             [ocr-client.document.entity :as docent]
+            [ocr-middle.functionalities :as omfns]
             [cljs.reader :as reader]))
 
 (defn retrieve-documents-fn-success
@@ -84,7 +89,9 @@
   "Default close of websocket"
   [event]
   (md/end-progress-bar)
-  (let [response (reader/read-string (aget event "reason"))
+  (let [response (reader/read-string
+                   (.-reason
+                     event))
         action (:action response)]
     (when (= action
              "rejected")
@@ -94,5 +101,186 @@
           {:heading status
            :content message}))
      ))
+ )
+
+(defn gallery-fn
+  "Generate HTML gallery"
+  [images
+   evt-fn
+   save-sign-fn]
+  (gen
+    (let [image-el (fn [id
+                        src
+                        img-style]
+                     (img
+                       ""
+                       {:id id
+                        :src src
+                        :style img-style}))
+          image-elements (atom [])
+          itr (atom 0)]
+     (doseq [image images]
+       (let [img-style (if (= @itr
+                              0)
+                         {:display "inline"}
+                         {:display "none"})]
+         (swap!
+           image-elements
+           conj
+           (image-el
+            (str "sign" @itr)
+            image
+            img-style))
+         (swap! itr inc))
+      )
+     [(div
+        (input
+          ""
+          {:id "btnLeft"
+           :type "button"
+           :value "<-"}
+          {:onclick {:evt-fn evt-fn
+                     :evt-p -}})
+        {:style {:float "left"
+                 :height "70px"
+                 :display "grid"
+                 :justify-content "center"
+                 :align-content "center"}})
+      (div
+        [(div
+           @image-elements
+           {:id "divImages"
+            :style {:width "200px"
+                    :height "70px"
+                    :display "grid"
+                    :justify-content "center"
+                    :align-content "center"}})
+         (div
+           (input
+             ""
+             {:id "signValue"
+              :type "text"
+              :style {:text-align "center"}})
+           {:style {:width "200px"
+                    :display "grid"
+                    :justify-content "center"
+                    :align-content "center"}})
+         (div
+           (when (contains?
+                   @allowed-actions
+                   omfns/save-sign)
+             (input
+               ""
+               {:type "button"
+                :value (get-label 1019)
+                :style {:margin-left "unset"}}
+               {:onclick {:evt-fn save-sign-fn}}))
+           {:style {:width "200px"
+                    :display "grid"
+                    :justify-content "center"}})]
+        {:style {:float "left"
+                 :height "140px"
+                 :padding-left "5px"}})
+      (div
+        (input
+          ""
+          {:id "btnRight"
+           :type "button"
+           :value "->"}
+          {:onclick {:evt-fn evt-fn
+                     :evt-p +}})
+        {:style {:float "left"
+                 :height "70px"
+                 :display "grid"
+                 :justify-content "center"
+                 :align-content "center"}})])
+   ))
+
+(defn textarea-fn
+  "Generate textarea HTML element"
+  [text]
+  (gen
+    (textarea
+      text
+      {:readonly "true"
+       :style {:width "400px"
+               :height "250px"
+               :resize "none"}}))
+ )
+
+(defn btn-fn
+  "Generate button HTML element"
+  [{evt-fn :evt-fn
+    evt-p :evt-p
+    value :value
+    id :id}]
+  (gen
+    (input
+      ""
+      (let [attrs {:value value
+                   :type "button"}
+            attrs (if id
+                    (assoc
+                      attrs
+                      :id
+                      id)
+                    attrs)]
+        attrs)
+      {:onclick {:evt-fn evt-fn
+                 :evt-p evt-p}}))
+ )
+
+(defn slider-fn
+  "Generate slider HTML element"
+  [id
+   & [attrs
+      evts
+      input-evts
+      label-text]]
+  (gen
+    [(div
+       (label
+         label-text)
+       {:style {:float "left"
+                :width "250px"
+                :text-align "right"}})
+     
+     (input
+       ""
+       (conj
+         {:id id
+          :type "range"
+          :min "-128"
+          :max "128"
+          :value "0"}
+         attrs)
+       evts)
+     (input
+       ""
+       (conj
+         {:id (str id "-value")
+          :value "0"
+          :style {:width "50px"}}
+         attrs)
+       input-evts)])
+ )
+
+(defn image-fn
+  "Generate img HTML element"
+  [src
+   & [style-attrs]]
+  (gen
+    [(img
+       ""
+       {:id "preparedImage"
+        :style (conj
+                 {:width "100%"}
+                 style-attrs)
+        :src src})
+     (input
+       ""
+       {:id "hiddenPreparedImage"
+        :type "hidden"
+        :value src})])
  )
 

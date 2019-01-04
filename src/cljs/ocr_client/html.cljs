@@ -1,44 +1,31 @@
 (ns ocr-client.html
-  (:require [htmlcss-lib.core :refer [a]]
+  (:require [htmlcss-lib.core :refer [h2 p]]
             [ocr-middle.functionalities :as omfns]
             [common-client.allowed-actions.controller :refer [allowed-actions]]
-            [ocr-client.document.controller :as dc]
-            [ocr-client.working-area.controller :as wac]
+            [ocr-client.document.html :as dh]
+            [ocr-client.working-area.html :as wah]
             [ocr-client.test-bot :refer [run-test]]
             [language-lib.core :refer [get-label]]))
+
+(defn home-page-content
+  "Home page content"
+  []
+  [(h2
+     (get-label 62))
+   (p
+     (get-label 63))]
+ )
 
 (defn custom-menu
   "Render menu items for user that have privilege for them"
   []
-  [(when (contains?
-           @allowed-actions
-           omfns/document-read)
-     (a
-       (get-label 1002)
-       {:id "aDocumentId"}
-       {:onclick {:evt-fn dc/nav-link}}))
-   (when (or (contains?
-               @allowed-actions
-               omfns/process-images)
-             (contains?
-               @allowed-actions
-               omfns/read-image)
-             (contains?
-               @allowed-actions
-               omfns/save-sign)
-             (contains?
-               @allowed-actions
-               omfns/save-parameters))
-     (a
-       (get-label 1001)
-       {:id "aWorkingAreaId"}
-       {:onclick {:evt-fn wac/nav-link}}))
+  [(dh/nav)
+   (wah/nav)
    (when (contains?
            @allowed-actions
            omfns/test-document-entity)
-     (a
-       (get-label 1021)
-       {:id "aTestDocumentId"}
-       {:onclick {:evt-fn run-test}}))]
- )
+     {:label (get-label 1021)
+      :id "test-document-entity-nav-id"
+      :evt-fn run-test})
+   ])
 

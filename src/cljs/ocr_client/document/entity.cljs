@@ -11,6 +11,14 @@
 (def entity-type
      document-cname)
 
+(defn dtype-labels
+  "Returns meal type property labels"
+  []
+  [[(get-label 1022)
+    "book_page"]
+   [(get-label 1023)
+    "typewriter"]])
+
 (defn form-conf-fn
   "Form configuration for document entity"
   []
@@ -19,16 +27,17 @@
    :entity-name (get-label 1002)
    :fields {:dname {:label (get-label 1003)
                     :input-el "text"
-                    :attrs {:required "required"}}
+                    :attrs {:placeholder (get-label 1003)
+                            :title (get-label 1003)
+                            :required true}}
             :dtype {:label (get-label 1004)
                     :input-el "radio"
-                    :attrs {:required "required"}
-                    :options [[(get-label 1022)
-                               "book_page"]
-                              [(get-label 1023)
-                               "typewriter"]]}
+                    :attrs {:required true}
+                    :options (dtype-labels)}
             :image {:label (get-label 1005)
-                    :input-el "img"}}
+                    :input-el "img"
+                    :attrs {:required true}}
+            }
    :fields-order [:dname
                   :dtype
                   :image]})
@@ -43,20 +52,22 @@
    :style
     {:dname
       {:content (get-label 1002)
-       :th {:style {:width "100px"}}
-       :td {:style {:width "100px"
+       :th {:style {:width "35%"}}
+       :td {:style {:width "35%"
                     :text-align "left"}}
        }
      :dtype
       {:content (get-label 1003)
-       :th {:style {:width "100px"}}
-       :td {:style {:width "100px"
+       :th {:style {:width "35%"}}
+       :td {:style {:width "35%"
                     :text-align "left"}}
-       }
+       :labels (into
+                 #{}
+                 (dtype-labels))}
      :image
       {:content (get-label 1004)
-       :th {:style {:width "100px"}}
-       :td {:style {:width "100px"
+       :th {:style {:width "35%"}}
+       :td {:style {:width "35%"
                     :text-align "left"}}
        }}
     })
@@ -64,14 +75,14 @@
 (defn query-fn
   "Table query for document entity"
   []
-  {:entity-type  entity-type
-   :entity-filter  {}
-   :projection  (:projection (columns-fn))
-   :projection-include  true
-   :qsort  {:dname 1}
-   :pagination  true
-   :current-page  0
-   :rows  25
+  {:entity-type entity-type
+   :entity-filter {}
+   :projection (:projection (columns-fn))
+   :projection-include true
+   :qsort {:dname 1}
+   :pagination true
+   :current-page 0
+   :rows 10
    :collation {:locale "sr"}})
 
 (defn table-conf-fn

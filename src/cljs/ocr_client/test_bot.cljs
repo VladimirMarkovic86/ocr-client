@@ -14,7 +14,8 @@
     (str
       window-number
       " select-document-for-reading"))
-  (let [document (aget window-obj "document")
+  (let [document (.-document
+                   window-obj)
         select-obj (md/query-selector-on-element
                      document
                      "#selectSource")
@@ -45,12 +46,12 @@
                         "name")]
     (ctest/execute-vector-when-loaded
       window-obj
-      [["#aWorkingAreaId"
+      [["#working-area-nav-id"
         click-elem
-        "#aWorkingAreaId"]
-       ["#aLearningId"
+        "#working-area-nav-id"]
+       ["#working-area-learning-nav-id"
         click-elem
-        "#aLearningId"]
+        "#working-area-learning-nav-id"]
        ["#selectSource"
         select-document-for-reading
         window-number]

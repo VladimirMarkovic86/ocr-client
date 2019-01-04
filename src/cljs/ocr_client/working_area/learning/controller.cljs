@@ -6,8 +6,7 @@
             [common-middle.request-urls :as rurls]
             [ocr-middle.request-urls :as orurls]
             [ocr-client.document.entity :as docent]
-            [ocr-client.working-area.html :as wah]
-            [ocr-client.working-area.learning.html :as lh]
+            [ocr-client.utils :as outils]
             [cljs.reader :as reader]
             [language-lib.core :refer [get-label]]
             [ocr-middle.functionalities :as omfns]
@@ -16,7 +15,8 @@
 (defn process-image-ws-onopen-fn
   "Onopen websocket event gather data from page and pass it through websocket to server"
   [event]
-  (let [websocket-obj (aget event "target")
+  (let [websocket-obj (.-target
+                        event)
         light-slider (md/query-selector
                        "#lightSlider")
         light-slider-value (md/get-value
@@ -45,7 +45,9 @@
        read server's results update page content
        and remove progress bar div from body"
   [event]
-  (let [response (reader/read-string (aget event "data"))
+  (let [response (reader/read-string
+                   (.-data
+                     event))
         action (:action response)]
     (when (= action
              "update-progress")
@@ -55,7 +57,9 @@
      )
     (when (= action
              "image-processed")
-      (let [image-src (get (:srcs response) 0)
+      (let [image-src (get
+                        (:srcs response)
+                        0)
             image-el (md/query-selector
                        "#preparedImage")]
         (md/set-src
@@ -82,7 +86,8 @@
                      "#signValue")
         sign-image (md/query-selector
                      "#gallery img[style*='display: inline;']")
-        sign-image-id (aget sign-image "id")
+        sign-image-id (.-id
+                        sign-image)
         current-value (md/replace-single
                         sign-image-id
                         "sign"
@@ -103,7 +108,8 @@
         "#sign"
         current-value))
     (doseq [sign-image signs-images]
-      (let [sign-image-id (aget sign-image "id")
+      (let [sign-image-id (.-id
+                            sign-image)
             doseq-value (md/replace-single
                           sign-image-id
                           "sign"
@@ -117,10 +123,12 @@
             "id"
             (str
               "sign"
-              (dec doseq-value))
+              (dec
+                doseq-value))
            ))
        ))
-   (when-not (nil? make-visible-sign-image)
+   (when-not (nil?
+               make-visible-sign-image)
     (md/set-attr
       make-visible-sign-image
       "style"
@@ -153,9 +161,8 @@
 (defn read-image-ws-onopen-fn
   "Onopen websocket event gather data from page and pass it through websocket to server"
   [event]
-  (let [websocket-obj (aget
-                        event
-                        "target")
+  (let [websocket-obj (.-target
+                        event)
         light-slider (md/query-selector
                        "#lightSlider")
         light-slider-value (md/get-value
@@ -219,15 +226,15 @@
    and remove please wait div from body"
   [event]
   (let [response (reader/read-string
-                   (aget
-                     event
-                     "data"))
+                   (.-data
+                     event))
         action (:action response)]
     (when (= action
              "read-image")
       (let [images-of-signs (:images response)
             read-text (:read-text response)
-            signs-count (count images-of-signs)
+            signs-count (count
+                          images-of-signs)
             evt-fn (fn [direction]
                      (let [displayed-image (md/query-selector
                                              "#gallery img[style*='display: inline;']")
@@ -245,7 +252,9 @@
                                        1)
                            hidden-signs (md/query-selector-all
                                           "#gallery img[style*='display: none;']")
-                           signs-count (inc (count hidden-signs))]
+                           signs-count (inc
+                                         (count
+                                           hidden-signs))]
                       (when (and (< new-value
                                     signs-count)
                                  (< -1
@@ -268,15 +277,16 @@
                           "display: none;"))
                        ))
                     )
-            gallery (wah/gallery-fn
+            gallery (outils/gallery-fn
                       images-of-signs
                       evt-fn
                       save-sign-fn)
-            textarea (wah/textarea-fn
+            textarea (outils/textarea-fn
                        read-text)]
         (md/remove-element-content
           "#gallery")
-        (when-not (empty? images-of-signs)
+        (when-not (empty?
+                    images-of-signs)
           (md/append-element
             "#gallery"
             gallery))
@@ -367,7 +377,7 @@
         threads-value (:threads data)
         rows-threads-value (:rows-threads data)
         unknown-sign-count-limit-value (:unknown-sign-count-limit data)
-        image (wah/image-fn
+        image (outils/image-fn
                 src)
         slider-evts (fn [id]
                       {:onchange
@@ -378,7 +388,7 @@
                               {:evt-fn utils/slider-input-value-fn
                                :evt-p id}})
         light-slider-selector "lightSlider"
-        light-slider (wah/slider-fn
+        light-slider (outils/slider-fn
                        light-slider-selector
                        {:value (or light-value
                                    "33")}
@@ -388,7 +398,7 @@
                          light-slider-selector)
                        (get-label 1009))
         contrast-slider-selector "contrastSlider"
-        contrast-slider (wah/slider-fn
+        contrast-slider (outils/slider-fn
                           contrast-slider-selector
                           {:value (or contrast-value
                                       "128")}
@@ -398,7 +408,7 @@
                             contrast-slider-selector)
                           (get-label 1010))
         space-slider-selector "spaceSlider"
-        space-slider (wah/slider-fn
+        space-slider (outils/slider-fn
                        space-slider-selector
                        {:min "0"
                         :max "128"
@@ -410,7 +420,7 @@
                          space-slider-selector)
                        (get-label 1011))
         hooks-slider-selector "hooksSlider"
-        hooks-slider (wah/slider-fn
+        hooks-slider (outils/slider-fn
                        hooks-slider-selector
                        {:min "0"
                         :max "128"
@@ -422,7 +432,7 @@
                          hooks-slider-selector)
                        (get-label 1012))
         matching-slider-selector "matchingSlider"
-        matching-slider (wah/slider-fn
+        matching-slider (outils/slider-fn
                           matching-slider-selector
                           {:min "0"
                            :max "100"
@@ -434,7 +444,7 @@
                             matching-slider-selector)
                           (get-label 1013))
         threads-slider-selector "threadsSlider"
-        threads-slider (wah/slider-fn
+        threads-slider (outils/slider-fn
                          threads-slider-selector
                          {:min "1"
                           :max "16"
@@ -446,7 +456,7 @@
                            threads-slider-selector)
                          (get-label 1014))
         rows-threads-slider-selector "rowsThreadsSlider"
-        rows-threads-slider (wah/slider-fn
+        rows-threads-slider (outils/slider-fn
                               rows-threads-slider-selector
                               {:min "1"
                                :max "16"
@@ -458,7 +468,7 @@
                                 rows-threads-slider-selector)
                               (get-label 1015))
         unknown-sign-count-limit-slider-selector "unknownSignCountLimitSlider"
-        unknown-sign-count-limit-slider (wah/slider-fn
+        unknown-sign-count-limit-slider (outils/slider-fn
                                           unknown-sign-count-limit-slider-selector
                                           {:min "0"
                                            :max "50"
@@ -469,15 +479,15 @@
                                           (slider-input-evts
                                             unknown-sign-count-limit-slider-selector)
                                           (get-label 1020))
-        process-btn (wah/btn-fn
+        process-btn (outils/btn-fn
                       {:evt-fn process-image-fn
                        :value (get-label 1017)
                        :id "btnProcess"})
-        read-btn (wah/btn-fn
+        read-btn (outils/btn-fn
                    {:evt-fn read-image-fn
                     :value (get-label 1016)
                     :id "btnRead"})
-        save-parameters-btn (wah/btn-fn
+        save-parameters-btn (outils/btn-fn
                               {:evt-fn save-parameters-fn
                                :value (get-label 1018)})]
     (md/remove-element-content
@@ -567,13 +577,4 @@
                 :entity-filter {:_id _id}}
        }))
  )
-
-(defn display-learning
-  "Initial function for displaying learning area"
-  []
-  (md/remove-element-content
-    ".content")
-  (utils/retrieve-documents-fn
-    lh/learning-area-html-fn
-    prepare-image-fn))
 
