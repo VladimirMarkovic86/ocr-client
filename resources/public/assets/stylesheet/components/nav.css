@@ -29,7 +29,7 @@ div.expand > div.sub-item {
 }
 /* Computer screen */
 @media only screen
-and (min-height: 521px) {
+and (min-width: 768px) {
  .menu-item-1 {
   margin-left: 10px;
  }
@@ -42,7 +42,7 @@ and (min-height: 521px) {
 }
 /* Grand Neo */
 @media only screen
-and (max-height: 520px) {
+and (max-width: 767px) {
  .root-div-menu div {
   text-align: center;
  }

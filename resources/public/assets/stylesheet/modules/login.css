@@ -54,7 +54,7 @@
 }
 /* Computer screen */
 @media only screen
-and (min-height: 521px) {
+and (min-width: 768px) {
  .login {
   width: 100%;
   height: 100%;
@@ -75,7 +75,7 @@ and (min-height: 521px) {
 }
 /* Grand Neo */
 @media only screen
-and (max-height: 520px) {
+and (max-width: 767px) {
  body > div:first-child,
  .login {
   background-color: #f9f9f9;

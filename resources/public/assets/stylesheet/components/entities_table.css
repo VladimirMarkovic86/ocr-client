@@ -106,12 +106,12 @@
 }
 /* Computer screen */
 @media only screen
-and (min-height: 521px) {
+and (min-width: 768px) {
  
 }
 /* Grand Neo */
 @media only screen
-and (max-height: 520px) {
+and (max-width: 767px) {
  .action.details,
  .action.edit,
  .action.delete,

@@ -56,14 +56,14 @@
 }
 /* Computer screen */
 @media only screen
-and (min-height: 521px) {
+and (min-width: 768px) {
  .account-menu {
   min-width: 180px;
  }
 }
 /* Grand Neo */
 @media only screen
-and (max-height: 520px) {
+and (max-width: 767px) {
  .account-menu {
   width: calc(40% - 20px);
  }

@@ -50,7 +50,7 @@
 }
 /* Computer screen */
 @media only screen
-and (min-height: 521px) {
+and (min-width: 768px) {
  .language-menu {
   right: 200px;
   min-width: 120px;
@@ -58,7 +58,7 @@ and (min-height: 521px) {
 }
 /* Grand Neo */
 @media only screen
-and (max-height: 520px) {
+and (max-width: 767px) {
  .language-menu {
   right: 40%;
   width: calc(37% - 20px);

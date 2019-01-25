@@ -6,7 +6,7 @@ body > div:first-child {
 }
 /* Computer screen */
 @media only screen
-and (min-height: 521px) {
+and (min-width: 768px) {
  header {
   height: 50px;
   width: 100%;
@@ -36,7 +36,7 @@ and (min-height: 521px) {
 }
 /* Grand Neo */
 @media only screen
-and (max-height: 520px) {
+and (max-width: 767px) {
  header {
   height: 50px;
  }
