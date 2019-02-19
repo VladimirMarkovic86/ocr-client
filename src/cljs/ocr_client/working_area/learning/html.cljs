@@ -1,5 +1,5 @@
 (ns ocr-client.working-area.learning.html
-  (:require [htmlcss-lib.core :refer [gen div select option]]
+  (:require [htmlcss-lib.core :refer [gen div select option label]]
             [ajax-lib.core :refer [sjax get-response]]
             [js-lib.core :as md]
             [common-middle.request-urls :as rurls]
@@ -42,7 +42,9 @@
         learning-form (gen
                         (div
                           [(div
-                             select-element-map
+                             (label
+                               [(get-label 1024)
+                                select-element-map])
                              {:id "source"})
                            (div
                              [(div

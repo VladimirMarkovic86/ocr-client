@@ -2,7 +2,6 @@
   (:require [ajax-lib.core :refer [ajax get-response]]
             [websocket-lib.core :refer [websocket]]
             [js-lib.core :as md]
-            [ocr-client.utils :as utils]
             [common-middle.request-urls :as rurls]
             [ocr-middle.request-urls :as orurls]
             [ocr-client.document.entity :as docent]
@@ -77,7 +76,7 @@
     orurls/process-images-ws-url
     {:onopen-fn process-image-ws-onopen-fn
      :onmessage-fn process-image-ws-onmessage-fn
-     :onclose-fn utils/websocket-default-close}))
+     :onclose-fn outils/websocket-default-close}))
 
 (defn save-sign-fn-success
   "Sign saved successfully"
@@ -307,7 +306,7 @@
     orurls/read-image-ws-url
     {:onopen-fn read-image-ws-onopen-fn
      :onmessage-fn read-image-ws-onmessage-fn
-     :onclose-fn utils/websocket-default-close}
+     :onclose-fn outils/websocket-default-close}
    ))
 
 (defn save-parameters-fn
@@ -381,11 +380,11 @@
                 src)
         slider-evts (fn [id]
                       {:onchange
-                        {:evt-fn utils/slider-value-fn
+                        {:evt-fn outils/slider-value-fn
                          :evt-p id}})
         slider-input-evts (fn [id]
                             {:onchange
-                              {:evt-fn utils/slider-input-value-fn
+                              {:evt-fn outils/slider-input-value-fn
                                :evt-p id}})
         light-slider-selector "lightSlider"
         light-slider (outils/slider-fn

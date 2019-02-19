@@ -1,5 +1,5 @@
 (ns ocr-client.working-area.reading.html
-  (:require [htmlcss-lib.core :refer [gen div select option]]
+  (:require [htmlcss-lib.core :refer [gen div select option label]]
             [ajax-lib.core :refer [sjax get-response]]
             [js-lib.core :as md]
             [common-middle.request-urls :as rurls]
@@ -42,54 +42,47 @@
                              {:onchange {:evt-fn evt-p}})
         reading-form (gen
                        (div 
-                         [(div
-                            (fw/image-field
-                              ""
-                              {:id "imageSource"
-                               :style {:max-height "200px"
-                                       :max-width "300px"}})
-                             {:style {:float "left"
-                                      :margin "5px"}})
+                         [(label
+                            [(get-label 1026)
+                             (fw/image-field
+                               ""
+                               {:id "imageSource"})])
                           (div
-                            [(div
-                               select-element-map
-                               {:id "source"})
+                            [(label
+                               [(get-label 1025)
+                                select-element-map])
+                             (div
+                               [(div
+                                  ""
+                                  {:id "processImage"})
+                                (div
+                                  ""
+                                  {:id "light"})
+                                (div
+                                  ""
+                                  {:id "contrast"})
+                                (div
+                                  ""
+                                  {:id "space"})
+                                (div
+                                  ""
+                                  {:id "hooks"})
+                                (div
+                                  ""
+                                  {:id "matching"})
+                                (div
+                                  ""
+                                  {:id "threads"})
+                                (div
+                                  ""
+                                  {:id "rowsThreads"})
+                                (div
+                                  ""
+                                  {:id "process"})]
+                               {:id "image"})
                               (div
-                                [(div
-                                   ""
-                                   {:id "processImage"})
-                                 (div
-                                   ""
-                                   {:id "light"})
-                                 (div
-                                   ""
-                                   {:id "contrast"})
-                                 (div
-                                   ""
-                                   {:id "space"})
-                                 (div
-                                   ""
-                                   {:id "hooks"})
-                                 (div
-                                   ""
-                                   {:id "matching"})
-                                 (div
-                                   ""
-                                   {:id "threads"})
-                                 (div
-                                   ""
-                                   {:id "rowsThreads"})
-                                 (div
-                                   ""
-                                   {:id "process"})]
-                                {:id "image"})
-                              (div
-                                [(div
-                                   ""
-                                   {:id "resultText"})]
-                                {:id "results"})]
-                            {:style {:float "left"
-                                     :margin "5px"}})]
+                                ""
+                                {:id "resultText"})])]
                          {:class "readingArea"}))]
     (md/append-element
       ".content"

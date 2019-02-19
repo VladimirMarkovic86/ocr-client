@@ -190,9 +190,7 @@
         threads-value (:threads data)
         rows-threads-value (:rows-threads data)
         image (outils/image-fn
-                src
-                {:width "unset"
-                 :max-width "300px"})
+                src)
         slider-evts (fn [id]
                       {:onchange
                         {:evt-fn outils/slider-value-fn

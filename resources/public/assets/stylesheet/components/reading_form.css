@@ -1,0 +1,59 @@
+.readingArea input:not(.btn),
+.readingArea select,
+.readingArea textarea {
+ border: 1px solid #0088cc;
+ border-radius: 5px;
+ color: #0088cc;
+ display: block;
+ margin: 5px 0;
+ padding: 5px 8px;
+ width: calc(100% - 18px);
+}
+.readingArea select {
+ width: 100%;
+}
+.readingArea label {
+ color: #0088cc;
+ cursor: pointer;
+ font-weight: bolder;
+}
+.readingArea .btn {
+ width: 100%;
+ margin-bottom: 10px;
+}
+.readingArea #resultText {
+ width: 100%;
+}
+.readingArea #resultText textarea{
+ height: 250px;
+ resize: none;
+}
+.readingArea input[id*="Slider"] {
+ float: left;
+ width: 50%;
+ margin-left: 10px;
+}
+.readingArea input[id*="Slider-value"] {
+ width: 50px;
+ text-align: right;
+}
+.readingArea .sliderParent {
+ height: 50px;
+}
+.readingArea #imageSource {
+ width: 100%;
+}
+/* Computer screen */
+@media only screen
+and (min-width: 768px) {
+ .readingArea .btn {
+  padding: 11px 30px;
+ }
+}
+/* Grand Neo */
+@media only screen
+and (max-width: 767px) {
+ .readingArea .btn {
+  padding: 11px 16px;
+ }
+}

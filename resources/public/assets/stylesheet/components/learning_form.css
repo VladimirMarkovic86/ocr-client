@@ -1,0 +1,76 @@
+.learningArea input:not(.btn),
+.learningArea select,
+.learningArea textarea {
+ border: 1px solid #0088cc;
+ border-radius: 5px;
+ color: #0088cc;
+ display: block;
+ margin: 5px 0;
+ padding: 5px 8px;
+ width: calc(100% - 18px);
+}
+.learningArea select {
+ width: 100%;
+}
+.learningArea label {
+ color: #0088cc;
+ cursor: pointer;
+ font-weight: bolder;
+}
+.learningArea .btn {
+ width: 100%;
+ margin-bottom: 10px;
+}
+.learningArea #gallery #btnLeft,
+.learningArea #gallery #btnRight {
+ float: left;
+ height: 140px;
+ width: 20%;
+}
+.learningArea #divImages {
+ height: 50px;
+ display: grid;
+ justify-content: center;
+}
+.learningArea .divImagesParent {
+ float: left;
+ width: calc(60% - 20px);
+ height: 140px;
+ padding: 0 10px;
+}
+.learningArea #signValue {
+ text-align: center;
+}
+.learningArea #resultText {
+ width: 100%;
+}
+.learningArea #resultText textarea{
+ height: 250px;
+ resize: none;
+}
+.learningArea input[id*="Slider"] {
+ float: left;
+ width: 50%;
+ margin-left: 10px;
+}
+.learningArea input[id*="Slider-value"] {
+ width: 50px;
+ text-align: right;
+}
+.learningArea .sliderParent {
+ height: 50px;
+}
+/* Computer screen */
+@media only screen
+and (min-width: 768px) {
+ .learningArea .btn {
+  padding: 11px 30px;
+ }
+}
+/* Grand Neo */
+@media only screen
+and (max-width: 767px) {
+ .learningArea .btn {
+  padding: 11px 16px;
+ }
+}

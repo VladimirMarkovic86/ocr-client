@@ -133,67 +133,40 @@
             img-style))
          (swap! itr inc))
       )
-     [(div
-        (input
-          ""
-          {:id "btnLeft"
-           :type "button"
-           :value "<-"}
-          {:onclick {:evt-fn evt-fn
-                     :evt-p -}})
-        {:style {:float "left"
-                 :height "70px"
-                 :display "grid"
-                 :justify-content "center"
-                 :align-content "center"}})
+     [(input
+        ""
+        {:id "btnLeft"
+         :type "button"
+         :class "btn"
+         :value "<-"}
+        {:onclick {:evt-fn evt-fn
+                   :evt-p -}})
       (div
         [(div
            @image-elements
-           {:id "divImages"
-            :style {:width "200px"
-                    :height "70px"
-                    :display "grid"
-                    :justify-content "center"
-                    :align-content "center"}})
-         (div
+           {:id "divImages"})
+         (input
+           ""
+           {:id "signValue"
+            :type "text"})
+         (when (contains?
+                 @allowed-actions
+                 omfns/save-sign)
            (input
              ""
-             {:id "signValue"
-              :type "text"
-              :style {:text-align "center"}})
-           {:style {:width "200px"
-                    :display "grid"
-                    :justify-content "center"
-                    :align-content "center"}})
-         (div
-           (when (contains?
-                   @allowed-actions
-                   omfns/save-sign)
-             (input
-               ""
-               {:type "button"
-                :value (get-label 1019)
-                :style {:margin-left "unset"}}
-               {:onclick {:evt-fn save-sign-fn}}))
-           {:style {:width "200px"
-                    :display "grid"
-                    :justify-content "center"}})]
-        {:style {:float "left"
-                 :height "140px"
-                 :padding-left "5px"}})
-      (div
-        (input
-          ""
-          {:id "btnRight"
-           :type "button"
-           :value "->"}
-          {:onclick {:evt-fn evt-fn
-                     :evt-p +}})
-        {:style {:float "left"
-                 :height "70px"
-                 :display "grid"
-                 :justify-content "center"
-                 :align-content "center"}})])
+             {:type "button"
+              :value (get-label 1019)
+              :class "btn"}
+             {:onclick {:evt-fn save-sign-fn}}))]
+        {:class "divImagesParent"})
+      (input
+        ""
+        {:id "btnRight"
+         :type "button"
+         :class "btn"
+         :value "->"}
+        {:onclick {:evt-fn evt-fn
+                   :evt-p +}})])
    ))
 
 (defn textarea-fn
@@ -202,10 +175,7 @@
   (gen
     (textarea
       text
-      {:readonly "true"
-       :style {:width "400px"
-               :height "250px"
-               :resize "none"}}))
+      {:readonly "true"}))
  )
 
 (defn btn-fn
@@ -218,7 +188,8 @@
     (input
       ""
       (let [attrs {:value value
-                   :type "button"}
+                   :type "button"
+                   :class "btn"}
             attrs (if id
                     (assoc
                       attrs
@@ -238,31 +209,28 @@
       input-evts
       label-text]]
   (gen
-    [(div
-       (label
-         label-text)
-       {:style {:float "left"
-                :width "250px"
-                :text-align "right"}})
-     
-     (input
-       ""
-       (conj
-         {:id id
-          :type "range"
-          :min "-128"
-          :max "128"
-          :value "0"}
-         attrs)
-       evts)
-     (input
-       ""
-       (conj
-         {:id (str id "-value")
-          :value "0"
-          :style {:width "50px"}}
-         attrs)
-       input-evts)])
+    (label
+      [label-text
+       (div
+         [(input
+            ""
+            (conj
+              {:id id
+               :type "range"
+               :min "-128"
+               :max "128"
+               :value "0"}
+              attrs)
+            evts)
+          (input
+            ""
+            (conj
+              {:id (str id "-value")
+               :value "0"}
+              attrs)
+            input-evts)]
+         {:class "sliderParent"})]
+     ))
  )
 
 (defn image-fn
