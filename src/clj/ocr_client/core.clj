@@ -3,42 +3,28 @@
   (:require [ajax-lib.http.status-code :as stc]
             [ajax-lib.http.mime-type :as mt]
             [ajax-lib.http.entity-header :as eh]
+            [ocr-client.config :as config]
             [server-lib.core :as srvr]))
 
 (defn routing-not-found
   "Default routing if file is not found"
   [& args]
   {:status (stc/not-found)
-   :headers {(eh/content-type) (mt/text-plain)}
-   :body (str {:status "success"})})
+   :headers {(eh/content-type) (mt/text-clojurescript)}
+   :body {:status "success"}})
 
 (defn start-server
   "Start server"
   []
   (try
-    (let [port (System/getenv "PORT")
-          port (if port
-                 (read-string
-                   port)
-                 1612)
-          certificates {:keystore-file-path
-                         "certificate/ocr_client.jks"
-                        :keystore-password
-                         "ultras12"}
-          certificates (when-not (System/getenv "CERTIFICATES")
-                         certificates)
-          thread-pool-size (System/getenv "THREAD_POOL_SIZE")]
-      (when thread-pool-size
-        (reset!
-          srvr/thread-pool-size
-          (read-string
-            thread-pool-size))
-       )
+    (let [port (config/define-port)
+          certificates-map (config/build-certificates-map)]
+      (config/set-thread-pool-size)
       (srvr/start-server
         routing-not-found
         nil
         port
-        certificates))
+        certificates-map))
     (catch Exception e
       (println (.getMessage e))
      ))
