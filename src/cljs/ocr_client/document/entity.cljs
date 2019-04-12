@@ -6,7 +6,8 @@
             [cljs.reader :as reader]
             [language-lib.core :refer [get-label]]
             [common-client.allowed-actions.controller :refer [allowed-actions]]
-            [ocr-middle.collection-names :refer [document-cname]]))
+            [ocr-middle.collection-names :refer [document-cname]]
+            [ocr-middle.document.entity :as omde]))
 
 (def entity-type
      document-cname)
@@ -15,9 +16,9 @@
   "Returns meal type property labels"
   []
   [[(get-label 1022)
-    "book_page"]
+    omde/dtype-book-page]
    [(get-label 1023)
-    "typewriter"]])
+    omde/dtype-typewriter]])
 
 (defn form-conf-fn
   "Form configuration for document entity"
@@ -82,7 +83,7 @@
    :qsort {:dname 1}
    :pagination true
    :current-page 0
-   :rows 10
+   :rows omde/rows
    :collation {:locale "sr"}})
 
 (defn table-conf-fn
@@ -93,6 +94,7 @@
    :form-conf (form-conf-fn)
    :actions [:details :edit :delete]
    :allowed-actions @allowed-actions
+   :reports-on true
    :search-on true
    :search-fields [:dname :dtype]
    :render-in ".content"
