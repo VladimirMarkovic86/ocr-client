@@ -22,13 +22,13 @@
                   {:label (get-label 4)
                    :id "document-create-nav-id"
                    :evt-fn create-entity
-                   :evt-p (table-conf-fn)})
+                   :evt-p table-conf-fn})
                 (when (contains?
                         @allowed-actions
                         omfns/document-read)
                   {:label (get-label 5)
                    :id "document-show-all-nav-id"
                    :evt-fn gen-table
-                   :evt-p (table-conf-fn)})]}
-   ))
+                   :evt-p table-conf-fn})]})
+ )
 
