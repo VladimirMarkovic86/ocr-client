@@ -16,7 +16,7 @@
                  [org.clojars.vladimirmarkovic86/ocr-middle "0.3.9"]
                  [org.clojars.vladimirmarkovic86/common-client "0.3.43"]
                  [org.clojars.vladimirmarkovic86/common-middle "0.2.9"]
-                 [org.clojars.vladimirmarkovic86/server-lib "0.3.31"]
+                 [org.clojars.vladimirmarkovic86/server-lib "0.3.32"]
                  [org.clojars.vladimirmarkovic86/validator-lib "0.1.34"]
                  ]
 
